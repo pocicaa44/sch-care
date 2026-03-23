@@ -435,20 +435,47 @@ function validateForm() {
 
 /**
  * Submit form.
- * Validasi form, update button state, dan submit form HTML native.
+ * Validasi form, populate file input dengan photos, lalu submit form natively.
  */
 function submitForm() {
   if (!validateForm()) return;
 
   const btn = document.querySelector('.btn-submit');
   const form = document.getElementById('formLaporan');
-  if (!btn || !form) return;
+  const fileInput = document.getElementById('fileInput');
+  
+  if (!btn || !form || !fileInput) return;
 
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status"></span> Mengirim...';
 
-  // Submit form HTML native (akan handle multipart/form-data dengan benar)
-  form.submit();
+  try {
+    // Buat DataTransfer untuk populate file input
+    const dataTransfer = new DataTransfer();
+    
+    photos.forEach((p) => {
+      if (p.file) {
+        // File dari file picker - add langsung
+        dataTransfer.items.add(p.file);
+      } else {
+        // Photo dari kamera - konversi dataUrl ke Blob jadi File
+        const blob = dataUrlToBlob(p.dataUrl);
+        const file = new File([blob], `kamera_${Date.now()}.jpg`, { type: 'image/jpeg' });
+        dataTransfer.items.add(file);
+      }
+    });
+    
+    // Assign files ke file input
+    fileInput.files = dataTransfer.files;
+    
+    // Submit form HTML native
+    form.submit();
+    
+  } catch (error) {
+    console.error('Submit error:', error);
+    showToast(`Gagal mengirim: ${error.message}`, 'error');
+    resetSubmitBtn(btn);
+  }
 }
 
 /**

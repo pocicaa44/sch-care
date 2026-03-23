@@ -21,6 +21,10 @@ class CheckRole
             abort(403, 'Akses Ditolak. Anda tidak memiliki izin.');
         }
 
+        // if (!auth()->check() || auth()->user()->role !== 'admin' ) {
+        //     abort(403);
+        // }
+
         return $next($request);
     }
 }

@@ -19,10 +19,10 @@ document.querySelectorAll('.btn-hapus').forEach(btn => {
     });
 });
 
-  /* ── Detail button (cosmetic) ────────────── */
-document.querySelectorAll('.btn-detail').forEach(btn => {
-    btn.addEventListener('click', function () {
-        const title = this.closest('.report-card').querySelector('.report-title').textContent;
-        alert('Membuka detail: ' + title);
-    });
-});
+//   /* ── Detail button (cosmetic) ────────────── */
+// document.querySelectorAll('.btn-detail').forEach(btn => {
+//     btn.addEventListener('click', function () {
+//         const title = this.closest('.report-card').querySelector('.report-title').textContent;
+//         alert('Membuka detail: ' + title);
+//     });
+// });

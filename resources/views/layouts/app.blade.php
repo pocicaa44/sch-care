@@ -36,7 +36,7 @@
             @auth
                 @if (Auth::user()->role === 'admin')
                     <a href="{{ route('admin.dashboard') }}"
-                        class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : '' }}">
+                        class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : 'nav-link' }}">
                         <i class="bi bi-grid-1x2-fill"></i> Main
                     </a>
                 @else
@@ -77,12 +77,11 @@
                             @if (Auth::user()->role === 'admin')
                                 Administrator
                             @else
-                                User
+                                 {{ auth()->user()->email }}
                             @endif
                         </div>
                     @endauth
                 </div>
-                <i class="bi bi-three-dots-vertical ms-auto" style="color:var(--gray-400);cursor:pointer;"></i>
             </div>
         </div>
     </aside>
@@ -113,7 +112,7 @@
                 @auth
                     @if (Auth::user()->role === 'admin')
                         <a href="{{ route('admin.dashboard') }}"
-                            class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : '' }}"
+                            class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : 'nav-link' }}"
                             data-bs-dismiss="offcanvas">
                             <i class="bi bi-grid-1x2-fill"></i> Menu
                             <span class="ms-auto badge bg-danger" style="font-size:.65rem;border-radius:50px;">12</span>
@@ -123,7 +122,6 @@
                             class="{{ request()->routeIs('siswa.dashboard') ? 'nav-link active' : 'nav-link' }}"
                             data-bs-dismiss="offcanvas">
                             <i class="bi bi-grid-1x2-fill"></i> Menu
-                            <span class="ms-auto badge bg-danger" style="font-size:.65rem;border-radius:50px;">12</span>
                         </a>
                         <a href="{{ route('siswa.create') }}"
                             class="{{ request()->routeIs('siswa.create') ? 'nav-link active' : 'nav-link' }}"
@@ -156,7 +154,7 @@
                                 @if (Auth::user()->role === 'admin')
                                     Administrator
                                 @else
-                                    User
+                                    {{ auth()->user()->email }}
                                 @endif
                             </div>
                         @endauth
@@ -170,6 +168,7 @@
 
     @stack('scripts')
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <script>
         document.getElementById('mobileNav')
             ?.querySelectorAll('.nav-link:not(.logout)')

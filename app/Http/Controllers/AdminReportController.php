@@ -12,16 +12,16 @@ class AdminReportController extends Controller
 
     public function index()
     {
-        // $stats = [
-        //     'total'    => Report::count(),
-        //     'pending'  => Report::where('status', 'pending')->count(),
-        //     'diproses' => Report::where('status', 'diproses')->count(),
-        //     'selesai'  => Report::where('status', 'selesai')->count(),
-        //     'ditolak'  => Report::where('status', 'ditolak')->count(),
-        // ];        
+        $stats = [
+            'total'    => Report::count(),
+            'pending'  => Report::where('status', 'pending')->count(),
+            'diproses' => Report::where('status', 'diproses')->count(),
+            'selesai'  => Report::where('status', 'selesai')->count(),
+            'ditolak'  => Report::where('status', 'ditolak')->count(),
+        ];        
 
         $reports = Report::with('user')->latest()->paginate(6);
-        return view('admin.dashboard', compact('reports'));
+        return view('admin.dashboard', compact('reports', 'stats'));
     }
 
     public function show($id)

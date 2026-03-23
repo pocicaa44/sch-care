@@ -41,6 +41,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::get('/create', [ReportController::class, 'create'])->name('create');
     Route::post('/store', [ReportController::class, 'store'])->name('store');
     Route::delete('/delete/{id}', [ReportController::class, 'destroy'])->name('destroy');
+    Route::get('/report/{id}', [ReportController::class, 'show'])->name('show');
 });
 
 // =================================================

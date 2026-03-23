@@ -21,7 +21,6 @@
                 <button class="btn-topbar d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileNav">
                     <i class="bi bi-list"></i>
                 </button>
-                <button class="btn-topbar"><i class="bi bi-bell"></i></button>
             </div>
         </header>
 

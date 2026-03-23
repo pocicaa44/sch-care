@@ -90,7 +90,7 @@
                         <!-- FOTO BUKTI -->
                         <div class="detail-section">
                             @if ($report->images->count() > 0)
-                                <div class="section-label"><i class="bi bi-images"></i> Foto Bukti (3)</div>
+                                <div class="section-label"><i class="bi bi-images"></i> Foto Bukti</div>
                                 <div class="photo-gallery">
                                     @foreach ($report->images as $img)
                                         <div class="photo-thumb" onclick="openLightbox(0)">
@@ -164,12 +164,10 @@
 
                     <!-- TOMBOL AKSI BAWAH -->
                     <div class="d-flex justify-content-between mt-2 fade-up">
-                        <a href="{{ route(auth()->user()->role === 'admin' ? 'admin.dashboard' : 'siswa.dashboard') }}"
-                            class="btn-back"><i class="bi bi-arrow-left"></i>
+                        <a href="{{ route(auth()->user()->role === 'admin' ? 'admin.dashboard' : 'siswa.dashboard') }}" class="btn-back"><i class="bi bi-arrow-left"></i>
                             Kembali</a>
-                        <form
-                            action="{{ route(auth()->user()->role === 'admin' ? 'admin.destroy' : 'siswa.destroy', $report->id) }}"
-                            method="POST" class="{{ $report->status == 'diproses' ? 'd-none' : '' }}">
+                        <form action="{{ route(auth()->user()->role === 'admin' ? 'admin.destroy' : 'siswa.destroy', $report->id) }}" method="POST"
+                            class="{{ $report->status == 'diproses' ? 'd-none' : '' }}">
                             @csrf @method('DELETE')
                             <button class="btn-hapus-detail ms-auto" onclick="confirmHapus()">
                                 <i class="bi bi-trash3"></i> Hapus Laporan
@@ -182,64 +180,94 @@
                 <!-- ═══ KOLOM KANAN (sidebar info) ══════════════════ -->
                 <div class="col-12 col-lg-4">
 
-                    {{-- admin tulis komentar disini --}}
-                    @if (auth()->user()->role === 'admin' || $report->status == 'diproses')
-                        <form action="{{ route('admin.comment', $report->id) }}" method="POST" class="mt-4">
-                            @csrf
-
-                            @if ($report->status == 'diproses')
-                                <div class="section-label mt-2"><i class="bi bi-reply-fill"></i> Tulis Komentar</div>
-
-                                <textarea name="content" class="input-custom @error('content') is-invalid @enderror" rows="3"
-                                    placeholder="Tulis tindak lanjut atau keterangan untuk pelapor..." maxlength="1000" required>{{ old('content') }}</textarea>
-
-                                @error('isi')
-                                    <div style="font-size:.74rem;color:var(--red-vivid);margin-top:4px;">{{ $message }}
-                                    </div>
-                                @enderror
-
-                                <div class="d-flex justify-content-end mt-2">
-                                    <button type="submit" class="btn-submit" style="padding:9px 22px;font-size:.84rem;">
-                                        <i class="bi bi-send-fill"></i> Kirim Komentar
-                                    </button>
-                                </div>
-                            @else
-                                <span>Can't post comments</span>
-                            @endif
-                        </form>
-
-                    @endif
-
-                    {{-- admin ubah status disini --}}
-                    @if (auth()->user()->role === 'admin')
-                        <div class="info-row" style="flex-direction:column;gap:8px;align-items:stretch;">
-                            <span class="label mb-1">Ubah Status</span>
-
-                            @php
-                                $nextStatuses = [];
-                                if ($report->status === 'pending' || $report->status === 'diproses') {
-                                    $nextStatuses = ['selesai' => 'Tandai Selesai', 'ditolak' => 'Tolak Laporan'];
-                                }
-                            @endphp
-                            @if (count($nextStatuses) > 0)
-                                <form action="{{ route('admin.status', $report->id) }}" method="POST">
-                                    @csrf
-                                    <div class="d-flex gap-2">
-                                        @foreach ($nextStatuses as $value => $label)
-                                            <button type="submit" name="status" value="{{ $value }}"
-                                                class="btn-status-action {{ $value === 'selesai' ? 'selesai' : 'ditolak' }}">
-                                                <i
-                                                    class="bi {{ $value === 'selesai' ? 'bi-check-circle-fill' : 'x-circle-fill' }}"></i>
-                                                {{ $label }}
-                                            </button>
-                                        @endforeach
-                                    </div>
-                                </form>
-                            @else
-                                <span>Cannot change status</span>
-                            @endif
+                    <!-- Info Status -->
+                    {{-- <div class="info-sidebar-card fade-up">
+                              <div class="iscard-header"><i class="bi bi-info-circle-fill"></i> Informasi Laporan</div>
+                        <div class="iscard-body">
+                          <div class="info-row">
+                            <span class="label">ID Laporan</span>
+                            <span class="value" style="font-family:monospace;">#RPT-2026-001</span>
+                          </div>
+                          <div class="info-row">
+                            <span class="label">Status</span>
+                            <span class="badge-status badge-diproses" style="font-size:.7rem;"><i
+                              class="bi bi-arrow-repeat"></i> Diproses</span>
+                            </div>
+                            <div class="info-row">
+                              <span class="label">Tanggal Kirim</span>
+                              <span class="value">17 Mar 2026</span>
+                            </div>
+                            <div class="info-row">
+                              <span class="label">Terakhir Update</span>
+                              <span class="value">19 Mar 2026</span>
+                            </div>
+                            <div class="info-row">
+                              <span class="label">Foto Dilampirkan</span>
+                              <span class="value">3 foto</span>
+                            </div>
+                            <div class="info-row">
+                              <span class="label">Mode Pengiriman</span>
+                              <span class="value">Identitas Diketahui</span>
+                            </div>
+                          </div>
                         </div>
-                    @endif
+                     --}}
+                    <!-- Timeline Status -->
+                    {{-- <div class="info-sidebar-card fade-up">
+                        <div class="iscard-header"><i class="bi bi-clock-history"></i> Riwayat Status</div>
+                        <div class="iscard-body">
+                          <div class="timeline">
+                            
+                            <div class="timeline-item">
+                              <div class="timeline-dot done"></div>
+                              <div class="timeline-label">Laporan Dikirim</div>
+                              <div class="timeline-date">17 Mar 2026, 09:42</div>
+                            </div>
+                            
+                                <div class="timeline-item">
+                                    <div class="timeline-dot done"></div>
+                                    <div class="timeline-label">Diterima Admin</div>
+                                    <div class="timeline-date">18 Mar 2026, 08:15</div>
+                                    <div class="timeline-note">Laporan diteruskan ke Dinas Sumber Daya Air Jakarta Utara.
+                                    </div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-dot active"></div>
+                                    <div class="timeline-label">Sedang Diproses</div>
+                                    <div class="timeline-date">19 Mar 2026, 14:30</div>
+                                    <div class="timeline-note">Tim survei sudah ke lokasi. Pengadaan pompa darurat sedang
+                                        berjalan.</div>
+                                </div>
+
+                                <div class="timeline-item">
+                                    <div class="timeline-dot"></div>
+                                    <div class="timeline-label" style="color:var(--gray-400);font-weight:500;">Selesai
+                                    </div>
+                                    <div class="timeline-date" style="color:var(--gray-300);">Menunggu...</div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bantuan -->
+                    <div class="info-sidebar-card fade-up" style="border-color:var(--red-mid);">
+                        <div class="iscard-header" style="background:var(--red-light);">
+                            <i class="bi bi-question-circle-fill" style="color:var(--red-vivid);"></i>
+                            <span style="color:var(--red-deep);">Butuh Bantuan?</span>
+                        </div>
+                        <div class="iscard-body">
+                            <p style="font-size:.82rem;color:var(--gray-600);line-height:1.6;margin:0 0 10px;">
+                                Jika laporan Anda tidak mendapat respons dalam 3 hari kerja, hubungi kami langsung.
+                            </p>
+                            <a href="#"
+                                style="display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:600;color:var(--red-vivid);text-decoration:none;">
+                                <i class="bi bi-telephone-fill"></i> Hubungi Admin
+                            </a>
+                        </div>
+                    </div> --}}
+
                 </div><!-- /.col kanan -->
 
             </div><!-- /.row -->
