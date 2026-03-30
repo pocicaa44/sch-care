@@ -12,7 +12,7 @@ class ReportController extends Controller
 {
   public function index()
   {
-    $reports = Report::where('user_id', Auth::id())->with('comments.user')->latest()->paginate(6);
+    $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('comments.user')->latest()->paginate(6);
     return view('siswa.dashboard', compact('reports'));
   }
 
@@ -23,7 +23,7 @@ class ReportController extends Controller
 
   public function show($id)
   {
-    $report = Report::with(['comments.user', 'images'])->findOrFail($id);
+    $report = Report::where('user_id', Auth::id())->visibleToUser()->with(['comments.user', 'images'])->findOrFail($id);
 
     return view('siswa.show', compact('report'));
   }
@@ -68,21 +68,12 @@ class ReportController extends Controller
         return back()->with('error', 'Laporan tidak dapat dihapus karena sedang dalam proses.');
     }
 
-    foreach ($report->images as $image) {
-        if($image->path && Storage::disk('public')->exists($image->path)) {
-            Storage::disk('public')->delete($image->path);
-        }
+    $report->deleteByUser();
+
+    if ($report->status === 'pending') {
+      $report->deleteByAdmin();
     }
 
-    $report->delete();
-
     return back()->with('success', 'Laporan berhasil dihapus.');
-
-    // abort_if($report->user_id !== Auth::id(), 403);
-
-    // $report->deleteByUser();
-
-    // return redirect()->route('siswa.dashboard')
-    //   ->with('success', 'Laporan berhasil dihapus.');
   }
 }

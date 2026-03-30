@@ -15,6 +15,8 @@ class Report extends Model
     'evidence_path',
     'is_anonymous',
     'status',
+    'deleted_by_user_at',
+    'deleted_by_admin_at',
   ];
 
   public function user()
@@ -32,53 +34,51 @@ class Report extends Model
     return $this->hasMany(ReportImage::class);
   }
 
-  // // ─── Scopes ──────────────────────────────────────────────
-  // public function scopeVisibleToUser(Builder $query): Builder
-  // {
-  //   return $query->whereNull('deleted_by_user_at');
-  // }
+  // ─── Scopes ──────────────────────────────────────────────
+  public function scopeVisibleToUser(Builder $query): Builder
+  {
+    return $query->whereNull('deleted_by_user_at');
+  }
 
-  // public function scopeVisibleToAdmin(Builder $query): Builder
-  // {
-  //   return $query->whereNull('deleted_by_admin_at');
-  // }
+  public function scopeVisibleToAdmin(Builder $query): Builder
+  {
+    return $query->whereNull('deleted_by_admin_at');
+  }
 
-  // public function scopeFullyDeleted(Builder $query): Builder
-  // {
-  //   return $query->whereNotNull('deleted_by_user_at')
-  //     ->whereNotNull('deleted_by_admin_at');
-  // }
+  public function scopeFullyDeleted(Builder $query): Builder
+  {
+    return $query->whereNotNull('deleted_by_user_at')
+      ->whereNotNull('deleted_by_admin_at');
+  }
 
-  // // ─── Soft Delete ─────────────────────────────────────────
-  // public function deleteByUser(): void
-  // {
-  //   $this->update(['deleted_by_user_at' => now()]);
-  // }
+  // ─── Soft Delete Methods ──────────────────────────────────
+  public function deleteByUser()
+  {
+    return $this->update(['deleted_by_user_at' => now()]);
+  }
 
-  // public function deleteByAdmin(): void
-  // {
-  //   $this->update(['deleted_by_admin_at' => now()]);
-  // }
+  public function deleteByAdmin()
+  {
+    return $this->update(['deleted_by_admin_at' => now()]);
+  }
 
-  // // ─── Restore ─────────────────────────────────────────────
-  // public function restoreByAdmin(): void
-  // {
-  //   $this->update(['deleted_by_admin_at' => null]);
-  // }
+  public function restoreByUser()
+  {
+    return $this->update(['deleted_by_user_at' => null]);
+  }
 
-  // // ─── Helpers ─────────────────────────────────────────────
-  // public function isDeletedByUser(): bool
-  // {
-  //   return !is_null($this->deleted_by_user_at);
-  // }
+  public function restoreByAdmin()
+  {
+    return $this->update(['deleted_by_admin_at' => null]);
+  }
 
-  // public function isDeletedByAdmin(): bool
-  // {
-  //   return !is_null($this->deleted_by_admin_at);
-  // }
+  public function isDeletedByUser()
+  {
+    return $this->deleted_by_user_at !== null;
+  }
 
-  // public function isFullyDeleted(): bool
-  // {
-  //   return $this->isDeletedByUser() && $this->isDeletedByAdmin();
-  // }
+  public function isDeletedByAdmin()
+  {
+    return $this->deleted_by_admin_at !== null;
+  }
 }

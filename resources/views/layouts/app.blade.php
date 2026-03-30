@@ -77,7 +77,7 @@
                             @if (Auth::user()->role === 'admin')
                                 Administrator
                             @else
-                                 {{ auth()->user()->email }}
+                                {{ auth()->user()->email }}
                             @endif
                         </div>
                     @endauth
@@ -115,7 +115,6 @@
                             class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : 'nav-link' }}"
                             data-bs-dismiss="offcanvas">
                             <i class="bi bi-grid-1x2-fill"></i> Menu
-                            <span class="ms-auto badge bg-danger" style="font-size:.65rem;border-radius:50px;">12</span>
                         </a>
                     @else
                         <a href="{{ route('siswa.dashboard') }}"
@@ -164,11 +163,43 @@
         </div>
     </div>
 
-    @yield('content')
+    {{-- top bar --}}
+    <div class="main-content">
+        <header class="topbar">
+            <div class="topbar-title">
+                <h2>
+                    @if (request()->routeIs('admin.dashboard') || request()->routeIs('siswa.dashboard'))
+                        Laporan Terbaru
+                    @elseif (request()->routeIs('siswa.create'))
+                        Tambah Laporan
+                    @elseif (request()->routeIs('siswa.show') || request()->routeIs('admin.show'))
+                        Detail Laporan
+                    @endif
+                </h2>
+                <p>{{ now('Asia/Jakarta')->format('d M Y') }}</p>
+            </div>
+            <div class="topbar-actions">
+                <button class="btn-topbar d-lg-none" data-bs-toggle="offcanvas" data-bs-target="#mobileNav"
+                    aria-controls="mobileNav">
+                    <i class="bi bi-list"></i>
+                </button>
+                @if (auth()->user()->role !== 'admin' && (request()->routeIs('siswa.dashboard')))
+                    <a href="{{ route('siswa.create') }}" class="btn-tambah d-none d-md-inline-flex">
+                        <i class="bi bi-plus-lg"></i> Tambah Laporan
+                    </a>
+                @endif
+            </div>
+        </header>
+
+        @yield('content')
+    </div>
+
 
     @stack('scripts')
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    </script>
     <script>
         document.getElementById('mobileNav')
             ?.querySelectorAll('.nav-link:not(.logout)')
@@ -192,6 +223,14 @@
                     }
                 });
             });
+
+          // function updateClock() {
+          //   const options = { timeZone: 'Asia/Jakarta', hour12: false };
+          //   const now = new Date().toLocaleString('id-ID', options);
+          //   document.getElementById('clock').innerText = now;
+          // }
+          // updateClock();
+          // setInterval(updateClock, 1000);
     </script>
 </body>
 

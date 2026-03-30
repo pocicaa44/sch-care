@@ -13,20 +13,20 @@ class AdminReportController extends Controller
     public function index()
     {
         $stats = [
-            'total'    => Report::count(),
-            'pending'  => Report::where('status', 'pending')->count(),
-            'diproses' => Report::where('status', 'diproses')->count(),
-            'selesai'  => Report::where('status', 'selesai')->count(),
-            'ditolak'  => Report::where('status', 'ditolak')->count(),
+            'total'    => Report::visibleToAdmin()->count(),
+            'pending'  => Report::visibleToAdmin()->where('status', 'pending')->count(),
+            'diproses' => Report::visibleToAdmin()->where('status', 'diproses')->count(),
+            'selesai'  => Report::visibleToAdmin()->where('status', 'selesai')->count(),
+            'ditolak'  => Report::visibleToAdmin()->where('status', 'ditolak')->count(),
         ];        
 
-        $reports = Report::with('user')->latest()->paginate(6);
+        $reports = Report::visibleToAdmin()->with('user')->latest()->paginate(6);
         return view('admin.dashboard', compact('reports', 'stats'));
     }
 
     public function show($id)
     {
-        $report = Report::with(['user', 'comments.user'])->findOrFail($id);
+        $report = Report::visibleToAdmin()->with(['user', 'comments.user'])->findOrFail($id);
         if ($report->status === "pending") {
             $report->update(['status' => 'diproses']);
         }
@@ -63,7 +63,7 @@ class AdminReportController extends Controller
     public function destroy($id)
     {
         $report = Report::findOrFail($id);
-        $report->delete();
+        $report->deleteByAdmin();
 
         return redirect()->route('admin.dashboard')->with('success', 'Laporan berhasil dihapus.');
     }

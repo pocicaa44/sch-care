@@ -372,7 +372,7 @@ input:checked + .toggle-slider::before      { transform: translateX(20px); }
   background: linear-gradient(to bottom, rgba(0,0,0,.5), transparent);
 }
 .cam-badge    { background: rgba(220,38,38,.85); color: #fff; font-size: .65rem; font-weight: 700; padding: 3px 10px; border-radius: 50px; letter-spacing: .08em; text-transform: uppercase; }
-.cam-counter  { font-size: .75rem; color: rgba(255,255,255,.8); font-weight: 500; }
+.cam-counter  { font-size: .75rem; font-weight: 500; }
 
 /* Flash effect */
 .camera-flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; transition: opacity .05s; }
@@ -414,7 +414,7 @@ input:checked + .toggle-slider::before      { transform: translateX(20px); }
 }
 .btn-shutter:hover  { transform: scale(1.05); box-shadow: 0 0 0 6px rgba(255,255,255,.12); }
 .btn-shutter:active { transform: scale(.95); }
-.btn-shutter-inner  { width: 54px; height: 54px; border-radius: 50%; background: #fff; border: 3px solid #ddd; }
+/* .btn-shutter-inner  { width: 54px; height: 54px; border-radius: 100%; background: #fff; border: 3px solid #ddd; } */
 
 .btn-cam-flip {
   width: 44px; height: 44px;
