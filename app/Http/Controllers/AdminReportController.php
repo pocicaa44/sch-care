@@ -27,9 +27,7 @@ class AdminReportController extends Controller
     public function show($id)
     {
         $report = Report::visibleToAdmin()->with(['user', 'comments.user'])->findOrFail($id);
-        if ($report->status === "pending") {
-            $report->update(['status' => 'diproses']);
-        }
+        
         return view('admin.show', compact('report'));
     }
 
@@ -50,6 +48,12 @@ class AdminReportController extends Controller
         $request->validate([
             'content' => 'required|string',
         ]);
+
+        $report = Report::findOrFail($id);
+
+        if ($report->status === "pending") {
+            $report->update(['status' => 'diproses']);
+        }
 
         Comment::create([
             'report_id' => $id,

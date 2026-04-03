@@ -5,20 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@yield('title')</title>
-    <!-- Bootstrap 5 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap"
         rel="stylesheet">
-    <link rel="stylesheet" href="{{ asset('templates/css/global.css') }}">
-
+    <link rel="stylesheet" href="{{ asset('templates/css/app.css') }}">
     @stack('styles')
 </head>
 
@@ -183,7 +178,7 @@
                     aria-controls="mobileNav">
                     <i class="bi bi-list"></i>
                 </button>
-                @if (auth()->user()->role !== 'admin' && (request()->routeIs('siswa.dashboard')))
+                @if (auth()->user()->role !== 'admin' && request()->routeIs('siswa.dashboard'))
                     <a href="{{ route('siswa.create') }}" class="btn-tambah d-none d-md-inline-flex">
                         <i class="bi bi-plus-lg"></i> Tambah Laporan
                     </a>
@@ -194,6 +189,15 @@
         @yield('content')
     </div>
 
+    @if (request()->routeIs('siswa.dashboard'))
+        <a class="fab" href="{{ route('siswa.create') }}" aria-label="Tambah Laporan">
+            <i class="bi bi-plus-lg"></i>
+        </a>
+    @elseif (request()->routeIs('siswa.show'))
+        <a class="fab" href="{{ route('siswa.edit', $report->id) }}" aria-label="Edit Laporan">
+            <i class="bi bi-pencil-square"></i>
+        </a>
+    @endif
 
     @stack('scripts')
 
@@ -224,13 +228,13 @@
                 });
             });
 
-          // function updateClock() {
-          //   const options = { timeZone: 'Asia/Jakarta', hour12: false };
-          //   const now = new Date().toLocaleString('id-ID', options);
-          //   document.getElementById('clock').innerText = now;
-          // }
-          // updateClock();
-          // setInterval(updateClock, 1000);
+        // function updateClock() {
+        //   const options = { timeZone: 'Asia/Jakarta', hour12: false };
+        //   const now = new Date().toLocaleString('id-ID', options);
+        //   document.getElementById('clock').innerText = now;
+        // }
+        // updateClock();
+        // setInterval(updateClock, 1000);
     </script>
 </body>
 

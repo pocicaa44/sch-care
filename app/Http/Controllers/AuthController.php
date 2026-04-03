@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator; // Hanya import yang diperlukan
+use PHPUnit\Framework\MockObject\NoMoreReturnValuesConfiguredException;
 
 class AuthController extends Controller
 {
@@ -22,25 +23,42 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
+        Auth::logout();
+
         $credentials = $request->validate([
             'email' => 'required|email',
             'password' => 'required',
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            // FIX: Paksa redirect ke URL spesifik, jangan pakai nama route dulu
-            if (Auth::user()->role === 'admin') {
-                return redirect()->route('admin.dashboard'); 
+            if(Auth::user()->role !== 'siswa') {
+                Auth::logout();
+                return back()->with('error', 'akun ini bukan akun untuk siswa');
             }
+            return redirect()->route('siswa.dashboard');
+        }
+        
+        return back()->with('error', 'email atau password salah');
+    }
 
-            return redirect('/siswa/dashboard');
+    public function loginAdmin(Request $request) 
+    {
+        Auth::logout();
+        
+        $credentials = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+
+        if(Auth::attempt($credentials)) {
+            if(Auth::user()->role !== 'admin') {
+                Auth::logout();
+                return back()->with('error', 'akun ini tidak ada hak akses admin');
+            }
+            return redirect()->route('admin.dashboard');
         }
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah.',
-        ]);
+        return back()->with('error', 'email atau password salah');
     }
 
     public function showRegister()

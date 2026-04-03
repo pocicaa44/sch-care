@@ -2,78 +2,101 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use App\Http\Requests\StoreReportRequest;
+use App\Http\Requests\UpdateReportRequest;
 use App\Models\Report;
-use App\Models\ReportImage;
+use App\Policies\ReportPolicy;
+use App\Services\ReportService;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class ReportController extends Controller
 {
-  public function index()
-  {
-    $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('comments.user')->latest()->paginate(6);
-    return view('siswa.dashboard', compact('reports'));
-  }
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-  public function create()
-  {
-    return view('siswa.create');
-  }
+    public function index()
+    {
+        $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('comments.user')->latest()->paginate(6);
 
-  public function show($id)
-  {
-    $report = Report::where('user_id', Auth::id())->visibleToUser()->with(['comments.user', 'images'])->findOrFail($id);
-
-    return view('siswa.show', compact('report'));
-  }
-
-  public function store(Request $request)
-  {
-    $request->validate([
-      'title' => 'required|string|max:100',
-      'location' => 'required|string|max:1000',
-      'description' => 'required|string',
-      'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-    ]);
-
-    $report = Report::create([
-      'user_id' => Auth::id(),
-      'title' => $request->title,
-      'location' => $request->location,
-      'description' => $request->description,
-      'is_anonymous' => $request->has('is_anonymous'),
-      'status' => 'pending',
-    ]);
-
-    if ($request->hasFile('images')) {
-      foreach ($request->file('images') as $image) {
-        $path = $image->store('evidences', 'public');
-
-        ReportImage::create([
-          'report_id' => $report->id,
-          'path' => $path,
-        ]);
-      }
+        return view('siswa.dashboard', compact('reports'));
     }
 
-    return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dibuat.');
-  }
-
-  public function destroy($id)
-  {
-    $report = Report::where('user_id', Auth::id())->findOrFail($id);
-
-    if ($report->status === 'diproses') {
-        return back()->with('error', 'Laporan tidak dapat dihapus karena sedang dalam proses.');
+    public function create()
+    {
+        return view('siswa.create');
     }
 
-    $report->deleteByUser();
+    public function show($id)
+    {
+        $report = Report::where('user_id', Auth::id())->visibleToUser()->with(['comments.user', 'images'])->findOrFail($id);
 
-    if ($report->status === 'pending') {
-      $report->deleteByAdmin();
+        return view('siswa.show', compact('report'));
     }
 
-    return back()->with('success', 'Laporan berhasil dihapus.');
-  }
+    public function store(StoreReportRequest $request, ReportService $service)
+    {
+        $images = $request->file(['images']);
+
+        if ($images && !is_array($images)) {
+            $images = [$images];
+        }
+
+        $report = $service->createReport(
+            $request->validated(),
+            $request->user(),
+            $images,
+        );
+
+        return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dibuat');
+    }
+
+    public function edit($id)
+    {
+        $report = Report::where('user_id', Auth::id())->with('images')->findOrFail($id);
+
+        $this->authorize('update', $report);
+
+        return view('siswa.edit', compact('report'));
+    }
+
+    public function update(UpdateReportRequest $request, $id, ReportService $service)
+    {
+        $report = Report::where('user_id', Auth::id())->findOrFail($id);
+        $this->authorize('update', $report);
+
+        // Ambil file dari input 'images[]' (sama seperti store)
+        $images = $request->file('images');
+        if ($images && !is_array($images)) {
+            $images = [$images];
+        }
+
+        $updatedReport = $service->updateReport(
+            $report,
+            $request->validated(),          // title, description, location
+            $images,                        // file gambar baru (array)
+            $request->input('deleted_images', []) // ID gambar yang dihapus
+        );
+
+        return redirect()->route('siswa.show', $updatedReport->id)
+            ->with('success', 'Laporan berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        $report = Report::where('user_id', Auth::id())->findOrFail($id);
+
+        if ($report->status === 'diproses') {
+            return back()->with('error', 'Laporan tidak dapat dihapus karena sedang dalam proses.');
+        }
+
+        $report->deleteByUser();
+
+        if ($report->status === 'pending') {
+            $report->deleteByAdmin();
+        }
+
+        return back()->with('success', 'Laporan berhasil dihapus.');
+    }
 }

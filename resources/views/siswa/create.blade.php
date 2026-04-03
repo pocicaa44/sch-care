@@ -2,10 +2,6 @@
 
 @section('title', 'Buat Laporan')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('templates/css/create.css') }}">
-@endpush
-
 @section('content')
 
     <!-- ═══════ MAIN CONTENT ═══════════════════════════════ -->

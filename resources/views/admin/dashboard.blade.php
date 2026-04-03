@@ -2,12 +2,6 @@
 
 @section('title', 'Dashboard Admin')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('templates/css/dashboard.css') }}">
-@endpush
-
-
-
 @section('content')
 
 

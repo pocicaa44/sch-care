@@ -2,10 +2,6 @@
 
 @section('title', 'Laporan Siswa')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('templates/css/dashboard.css') }}">
-@endpush
-
 @section('content')
 
 
@@ -73,15 +69,9 @@
                     </div>
                 </div>
             @empty
-                <span class="text-center">Anda belum memiliki laporan</span>
+                <p class="text-center text-secondary">Anda belum memiliki laporan</p>
             @endforelse
     </main>
-
-    <a class="fab" href="{{ route('siswa.create') }}" aria-label="Tambah Laporan">
-        <i class="bi bi-plus-lg"></i>
-    </a>
-
-
 
 @endsection
 

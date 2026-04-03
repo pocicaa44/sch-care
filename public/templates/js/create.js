@@ -1,10 +1,3 @@
-/* ==========================================================
-   create.js
-   Digunakan oleh: laporan/create.blade.php
-   Isi: photo management, camera, location detect,
-        anonymous toggle, char counter, form validation
-   ========================================================== */
-
 /* ══════════════════════════════════════════════════════════
    KONSTANTA & STATE
 ══════════════════════════════════════════════════════════ */

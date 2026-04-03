@@ -32,6 +32,8 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // HALAMAN LOGIN ADMIN (URL: /admin)
 // =================================================
 Route::get('/admin', [AuthController::class, 'showAdminLogin'])->name('admin.login');
+// Admin login
+Route::post('/admin', [AuthController::class, 'loginAdmin'])->name('admin.login.post');
 
 // =================================================
 // AREA SISWA (Prefix: /siswa)
@@ -42,6 +44,8 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::post('/store', [ReportController::class, 'store'])->name('store');
     Route::delete('/delete/{id}', [ReportController::class, 'destroy'])->name('destroy');
     Route::get('/report/{id}', [ReportController::class, 'show'])->name('show');
+    Route::get('/report/{id}/edit', [ReportController::class, 'edit'])->name('edit');
+    Route::put('/report/{id}', [ReportController::class, 'update'])->name('update');
 });
 
 // =================================================

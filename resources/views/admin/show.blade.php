@@ -2,11 +2,6 @@
 
 @section('title', 'Detail Laporan')
 
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('templates/css/show.css') }}">
-    <link rel="stylesheet" href="{{ asset('templates/css/create.css') }}">
-@endpush
-
 @section('content')
 
     <main class="page-body">
@@ -41,8 +36,8 @@
                                         @elseif ($report->status == 'diproses') bi-arrow-repeat
                                         @elseif ($report->status == 'selesai') bi-check-circle
                                         @else bi-x-circle @endif
-                                        me-1"
-                                    ></i> {{ ucfirst($report->status) }}</span>
+                                        me-1"></i>
+                                {{ ucfirst($report->status) }}</span>
                         </div>
                         <h1 class="detail-title">{{ $report->title }}</h1>
                         <div class="detail-meta-row">
@@ -75,8 +70,8 @@
                         @if ($report->images->count() > 0)
                             <div class="section-label"><i class="bi bi-images"></i> Foto Bukti (3)</div>
                             <div class="photo-gallery">
-                                @foreach ($report->images as $img)
-                                    <div class="photo-thumb" onclick="openLightbox(0)">
+                                @foreach ($report->images as $index => $img)
+                                    <div class="photo-thumb" onclick="openLightbox({{ $index }})">
                                         <img src="{{ asset('storage/' . $img->path) }}" />
                                         <div class="photo-overlay"><i class="bi bi-zoom-in"></i></div>
                                     </div>
@@ -142,22 +137,6 @@
                     </div>
                 </div><!-- /.komentar card -->
 
-
-                <!-- TOMBOL AKSI BAWAH -->
-                <div class="d-flex justify-content-between mt-2 fade-up">
-                    <a href="{{ route(auth()->user()->role === 'admin' ? 'admin.dashboard' : 'siswa.dashboard') }}"
-                        class="btn-back"><i class="bi bi-arrow-left"></i>
-                        Kembali</a>
-                    <form
-                        action="{{ route(auth()->user()->role === 'admin' ? 'admin.destroy' : 'siswa.destroy', $report->id) }}"
-                        method="POST" class="{{ $report->status == 'diproses' ? 'd-none' : '' }}">
-                        @csrf @method('DELETE')
-                        <button class="btn-hapus-detail ms-auto" onclick="confirmHapus()">
-                            <i class="bi bi-trash3"></i> Hapus Laporan
-                        </button>
-                    </form>
-                </div>
-
             </div><!-- /.col kiri -->
 
             <!-- ═══ KOLOM KANAN (sidebar info) ══════════════════ -->
@@ -168,8 +147,8 @@
                     <form action="{{ route('admin.comment', $report->id) }}" method="POST" class="mt-4">
                         @csrf
 
-                        @if ($report->status == 'diproses')
-                            <div class="section-label mt-2"><i class="bi bi-reply-fill"></i> Tulis Komentar</div>
+                        @if ($report->status == 'pending' || $report->status == 'diproses')
+                            <div class="section-label mt-2"><i class="bi bi-reply-fill"></i> Beri tanggapan</div>
 
                             <textarea name="content" class="input-custom @error('content') is-invalid @enderror" rows="3"
                                 placeholder="Tulis tindak lanjut atau keterangan untuk pelapor..." maxlength="1000" required>{{ old('content') }}</textarea>
@@ -181,11 +160,9 @@
 
                             <div class="d-flex justify-content-end mt-2">
                                 <button type="submit" class="btn-submit" style="padding:9px 22px;font-size:.84rem;">
-                                    <i class="bi bi-send-fill"></i> Kirim Komentar
+                                    <i class="bi bi-send-fill"></i> Kirim Tanggapan
                                 </button>
                             </div>
-                        @else
-                            <span>Can't post comments</span>
                         @endif
                     </form>
 
@@ -194,12 +171,10 @@
                 {{-- admin ubah status disini --}}
                 @if (auth()->user()->role === 'admin')
                     <div class="info-row" style="flex-direction:column;gap:8px;align-items:stretch;">
-                        <span class="label mb-1">Ubah Status</span>
-
                         @php
                             $nextStatuses = [];
                             if ($report->status === 'pending' || $report->status === 'diproses') {
-                                $nextStatuses = ['selesai' => 'Tandai Selesai', 'ditolak' => 'Tolak Laporan'];
+                                $nextStatuses = ['selesai' => 'Selesai', 'ditolak' => 'Tolak'];
                             }
                         @endphp
                         @if (count($nextStatuses) > 0)
@@ -210,14 +185,30 @@
                                         <button type="submit" name="status" value="{{ $value }}"
                                             class="btn-status-action {{ $value === 'selesai' ? 'selesai' : 'ditolak' }}">
                                             <i
-                                                class="bi {{ $value === 'selesai' ? 'bi-check-circle-fill' : 'x-circle-fill' }}"></i>
+                                                class="bi {{ $value === 'selesai' ? 'bi-check-circle-fill' : 'bi-x-circle-fill' }}"></i>
                                             {{ $label }}
                                         </button>
                                     @endforeach
                                 </div>
                             </form>
                         @else
-                            <span>Cannot change status</span>
+                            <div class="info-sidebar-card fade-up">
+                                <div class="iscard-body">
+                                    <a href="{{ route(auth()->user()->role === 'admin' ? 'admin.dashboard' : 'siswa.dashboard') }}"
+                                        class="btn-back w-100"><i class="bi bi-arrow-left"></i>
+                                        Kembali
+                                    </a>
+
+                                    {{-- <form
+                                        action="{{ route(auth()->user()->role === 'admin' ? 'admin.destroy' : 'siswa.destroy', $report->id) }}"
+                                        method="POST" class="{{ $report->status == 'diproses' ? 'd-none' : '' }}">
+                                        @csrf @method('DELETE')
+                                        <button class="btn-hapus-detail ms-auto w-100 mt-3">
+                                            <i class="bi bi-trash3"></i> Hapus Laporan
+                                        </button>
+                                    </form> --}}
+                                </div>
+                            </div>
                         @endif
                     </div>
                 @endif
@@ -228,6 +219,14 @@
     </main>
 
 @endsection
+
+<div class="lightbox-overlay" id="lightbox" onclick="closeLightboxOnBg(event)">
+    <button class="lightbox-close" onclick="closeLightbox()"><i class="bi bi-x-lg"></i></button>
+    <button class="lightbox-nav lightbox-prev" onclick="lightboxNav(-1)"><i class="bi bi-chevron-left"></i></button>
+    <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+    <button class="lightbox-nav lightbox-next" onclick="lightboxNav(1)"><i class="bi bi-chevron-right"></i></button>
+    <div class="lightbox-counter" id="lightboxCounter"></div>
+</div>
 
 @push('scripts')
     <script src="{{ asset('templates/js/show.js') }}"></script>
