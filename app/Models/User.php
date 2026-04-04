@@ -17,6 +17,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'auto_delete_days',
     ];
 
     protected $hidden = [
@@ -26,6 +27,7 @@ class User extends Authenticatable
 
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'auto_delete_days' => 'integer',
     ];
 
     public function reports()

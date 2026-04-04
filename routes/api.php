@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ReportController;
-
+use App\Http\Controllers\Api\V1\UserSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
@@ -22,4 +22,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::get('/v1/reports/{id}', [ReportController::class, 'show']);
     Route::delete('/v1/reports/{id}', [ReportController::class, 'destroy']);
     Route::put('/v1/reports/{id}', [ReportController::class, 'update']);
+    Route::get('/v1/user/settings', [UserSettingController::class, 'show']);
+    Route::put('/v1/user/settings', [UserSettingController::class, 'update']);
 });

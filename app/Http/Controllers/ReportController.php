@@ -97,6 +97,6 @@ class ReportController extends Controller
             $report->deleteByAdmin();
         }
 
-        return back()->with('success', 'Laporan berhasil dihapus.');
+        return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dihapus.');
     }
 }

@@ -37,6 +37,7 @@ class ReportService
             'location' => $data['location'],
           ]);
 
+          // hapus gambar yang dipilih
           if(!empty($deletedImageIds)) {
             $imagesToDelete = $report->images()->whereIn('id', $deletedImageIds)->get();
             foreach ($imagesToDelete as $image) {
@@ -45,6 +46,7 @@ class ReportService
             }
           }
 
+          // tambah gambar baru
           if ($newImages) {
             foreach ($newImages as $image) {
               $path = $image->store('reports', 'public');

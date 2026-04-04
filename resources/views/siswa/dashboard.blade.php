@@ -50,15 +50,15 @@
                                 <i class="bi bi-geo-alt-fill"></i> {{ $report->location }}
                             </div>
                             <div class="card-date">
-                                <i class="bi bi-calendar3"></i> {{ $report->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}
+                                <i class="bi bi-calendar3"></i>
+                                {{ $report->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}
                             </div>
                         </div>
                         <div class="card-footer-custom">
                             <a href="{{ route('siswa.show', $report->id) }}" class="btn-detail"><i class="bi bi-eye"></i>
                                 Detail</a>
                             @if ($report->status !== 'diproses')
-                                <form action="{{ route('siswa.destroy', $report->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin hapus laporan ini?')" style="display:inline">
+                                <form action="{{ route('siswa.destroy', $report->id) }}" method="POST" style="display:inline">
                                     @csrf @method('DELETE')
                                     <button class="btn-hapus"><i class="bi bi-trash3"></i> Hapus</button>
                                 </form>
@@ -71,6 +71,10 @@
             @empty
                 <p class="text-center text-secondary">Anda belum memiliki laporan</p>
             @endforelse
+
+            <div class="">
+                {{ $reports->links() }}
+            </div>
     </main>
 
 @endsection
@@ -80,4 +84,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
+    
 @endpush

@@ -21,7 +21,8 @@ class StoreReportRequest extends FormRequest
             'location' => 'required|string|max:1000',
             'description' => 'required|string',
             'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            // 'images' => 'nullable|array|max:5',
+            'deleted_images' => 'nullable|array',
+            'deleted_images.*' => 'exists:report_images,id',
         ];
     }
 }

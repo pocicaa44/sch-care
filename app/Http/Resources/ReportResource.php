@@ -25,7 +25,7 @@ class ReportResource extends JsonResource
 
             'images' => $this->images->map(fn($image) => [
                 'id' => $image->id,
-                'url' => Storage::url($image->path),
+                'url' => asset('storage/' . $image->path),
             ]),
         ];
     }

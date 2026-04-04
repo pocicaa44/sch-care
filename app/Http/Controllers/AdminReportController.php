@@ -6,28 +6,29 @@ use App\Models\Comment;
 use App\Models\Report;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class AdminReportController extends Controller
 {
-
     public function index()
     {
         $stats = [
-            'total'    => Report::visibleToAdmin()->count(),
-            'pending'  => Report::visibleToAdmin()->where('status', 'pending')->count(),
+            'total' => Report::visibleToAdmin()->count(),
+            'pending' => Report::visibleToAdmin()->where('status', 'pending')->count(),
             'diproses' => Report::visibleToAdmin()->where('status', 'diproses')->count(),
-            'selesai'  => Report::visibleToAdmin()->where('status', 'selesai')->count(),
-            'ditolak'  => Report::visibleToAdmin()->where('status', 'ditolak')->count(),
-        ];        
+            'selesai' => Report::visibleToAdmin()->where('status', 'selesai')->count(),
+            'ditolak' => Report::visibleToAdmin()->where('status', 'ditolak')->count(),
+        ];
 
         $reports = Report::visibleToAdmin()->with('user')->latest()->paginate(6);
+
         return view('admin.dashboard', compact('reports', 'stats'));
     }
 
     public function show($id)
     {
         $report = Report::visibleToAdmin()->with(['user', 'comments.user'])->findOrFail($id);
-        
+
         return view('admin.show', compact('report'));
     }
 
@@ -38,7 +39,14 @@ class AdminReportController extends Controller
         ]);
 
         $report = Report::findOrFail($id);
-        $report->update(['status' => $request->status]);
+        $oldStatus = $report->status;
+        $newStatus = $request->status;
+
+        $report->update(['status' => $newStatus]);
+
+        if (in_array($newStatus, ['selesai', 'ditolak']) && $oldStatus !== $newStatus) {
+            $report->update(['status_changed_at' => now()]);
+        }
 
         return back()->with('success', 'Status laporan berhasil diperbarui.');
     }
@@ -51,7 +59,7 @@ class AdminReportController extends Controller
 
         $report = Report::findOrFail($id);
 
-        if ($report->status === "pending") {
+        if ($report->status === 'pending') {
             $report->update(['status' => 'diproses']);
         }
 
@@ -63,11 +71,22 @@ class AdminReportController extends Controller
 
         return back()->with('success', 'Komentar berhasil ditambahkan.');
     }
-    
+
     public function destroy($id)
     {
         $report = Report::findOrFail($id);
-        $report->deleteByAdmin();
+
+        if (is_null($report->deleted_by_user_at)) {
+            return redirect()->route('admin.dashboard')
+                ->with('error', 'Laporan belum dihapus oleh siswa. Tidak bisa dihapus oleh admin.');
+        }
+
+        foreach ($report->images as $image) {
+            Storage::disk('public')->delete($image->path);
+        }
+        $report->images()->delete();
+        $report->comments()->delete();
+        $report->forceDelete();
 
         return redirect()->route('admin.dashboard')->with('success', 'Laporan berhasil dihapus.');
     }

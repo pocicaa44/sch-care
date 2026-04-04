@@ -24,6 +24,7 @@ class ReportController extends Controller
     public function index()
     {
         $reports = Report::where('user_id', Auth::id())
+            ->whereNull('deleted_by_user_at')
             ->with('images')
             ->latest()
             ->get();
@@ -52,6 +53,7 @@ class ReportController extends Controller
     public function show($id)
     {
         $report = Report::where('user_id', Auth::id())
+            ->whereNull('deleted_by_user_at')
             ->with(['comments.user', 'images'])
             ->findOrFail($id);
 
@@ -68,10 +70,15 @@ class ReportController extends Controller
             ], 403);
         }
 
+        $images = $request->file('images');
+        if($images && !is_array($images)){
+            $images = [$images];
+        }
+
         $updatedReport = $service->updateReport(
             $report,
             $request->validated(),
-            $request->file('images'),
+            $images,
             $request->input('deleted_images', [])
         );
 

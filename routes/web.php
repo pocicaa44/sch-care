@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserSettingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -46,6 +47,9 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::get('/report/{id}', [ReportController::class, 'show'])->name('show');
     Route::get('/report/{id}/edit', [ReportController::class, 'edit'])->name('edit');
     Route::put('/report/{id}', [ReportController::class, 'update'])->name('update');
+
+    Route::get('/settings', [UserSettingController::class, 'edit'])->name('settings.edit');
+    Route::put('/settings', [UserSettingController::class, 'update'])->name('settings.update');
 });
 
 // =================================================

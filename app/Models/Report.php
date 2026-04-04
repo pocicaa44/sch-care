@@ -17,6 +17,7 @@ class Report extends Model
     'status',
     'deleted_by_user_at',
     'deleted_by_admin_at',
+    'status_changed_at',
   ];
 
   public function user()

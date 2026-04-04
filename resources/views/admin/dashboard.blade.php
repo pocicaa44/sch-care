@@ -84,7 +84,12 @@
                                             class="bi bi-x-circle me-1"></i>Ditolak</span>
                                 @endif
                             </div>
-                            <div class="report-title">{{ $report->title }}</div>
+                            <div class="d-flex justify-content-between">
+                                <div class="report-title">{{ $report->title }}</div>
+                                @if ($report->deleted_by_user_at)
+                                <span class="text-body-tertiary fst-italic">Deleted</span>
+                                @endif
+                            </div>
                             <div class="report-desc">
                                 {{ $report->description }}
                             </div>
@@ -100,7 +105,7 @@
                                 <i class="bi bi-eye"></i>
                                 Detail
                             </a>
-                            @if ($report->status === 'selesai' || $report->status === 'ditolak')
+                            @if ($report->deleted_by_user_at)
                                 <form action="{{ route('admin.destroy', $report->id) }}" method="POST"
                                     onsubmit="return confirm('Yakin hapus laporan ini?')" style="display:inline">
                                     @csrf @method('DELETE')
