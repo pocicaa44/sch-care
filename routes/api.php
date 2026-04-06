@@ -4,7 +4,6 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ReportController;
 use App\Http\Controllers\Api\V1\UserSettingController;
 use Illuminate\Http\Request;
-use Illuminate\Routing\RouteRegistrar;
 use Illuminate\Support\Facades\Route;
 
 // Route::get('/user', function (Request $request) {
@@ -15,7 +14,7 @@ Route::post('/v1/register', [AuthController::class, 'register']);
 Route::post('/v1/login', [AuthController::class, 'login']);
 
 // protected routes
-Route::middleware('auth:sanctum')->group(function() {
+Route::middleware('auth:sanctum')->group(function () {
     Route::post('/v1/logout', [ReportController::class, 'logout']);
     Route::get('/v1/reports', [ReportController::class, 'index']);
     Route::post('/v1/reports', [ReportController::class, 'store']);
@@ -24,4 +23,6 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::put('/v1/reports/{id}', [ReportController::class, 'update']);
     Route::get('/v1/user/settings', [UserSettingController::class, 'show']);
     Route::put('/v1/user/settings', [UserSettingController::class, 'update']);
+    Route::delete('/v1/user/account', [AuthController::class, 'deleteAccount']);
+    Route::post('/user/fcm-token', [AuthController::class, 'updateFcmToken']);
 });

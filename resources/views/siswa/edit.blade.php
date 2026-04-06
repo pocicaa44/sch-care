@@ -879,7 +879,7 @@
         function showToast(msg, type = 'success') {
             const colors = {
                 success: {
-                    bg: '#d1fae5',
+                    bg: '#d1fae5',k
                     color: '#065f46',
                     icon: 'bi-check-circle-fill'
                 },

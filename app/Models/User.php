@@ -4,13 +4,14 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens ,HasFactory, Notifiable;
+    use SoftDeletes, HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = [
         'name',
@@ -18,6 +19,8 @@ class User extends Authenticatable
         'password',
         'role',
         'auto_delete_days',
+        'deleted_at',
+        'fcm_token',
     ];
 
     protected $hidden = [
@@ -30,6 +33,11 @@ class User extends Authenticatable
         'auto_delete_days' => 'integer',
     ];
 
+    public function routeNotificationForFcm()
+    {
+        return $this->fcm_token;
+    }
+
     public function reports()
     {
         return $this->hasMany(Report::class);
@@ -39,16 +47,4 @@ class User extends Authenticatable
     {
         return $this->hasMany(Comment::class);
     }
-
-    // helper
-
-    // public function isAdmin()
-    // {
-    //     return $this->role === 'admin';
-    // }
-
-    // public function isStudent()
-    // {
-    //     return $this->role === 'student';
-    // }
 }

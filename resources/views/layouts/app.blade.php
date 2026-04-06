@@ -18,7 +18,7 @@
 </head>
 
 <body>
-
+    {{-- sidebar --}}
     <aside class="sidebar" id="desktopSidebar">
         <div class="sidebar-brand">
             <div class="brand-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
@@ -32,12 +32,16 @@
                 @if (Auth::user()->role === 'admin')
                     <a href="{{ route('admin.dashboard') }}"
                         class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : 'nav-link' }}">
-                        <i class="bi bi-grid-1x2-fill"></i> Main
+                        <i class="bi bi-grid-1x2-fill"></i> Reports
+                    </a>
+                    <a href="{{ route('admin.users.index') }}"
+                        class="{{ request()->routeIs('admin.users.index') ? 'nav-link active' : 'nav-link' }}">
+                        <i class="bi bi-person-fill"></i> Users
                     </a>
                 @else
                     <a href="{{ route('siswa.dashboard') }}"
                         class="{{ request()->routeIs('siswa.dashboard') ? 'nav-link active' : 'nav-link' }}">
-                        <i class="bi bi-grid-1x2-fill"></i> Menu
+                        <i class="bi bi-grid-1x2-fill"></i> Laporan
                     </a>
                     <a href="{{ route('siswa.create') }}"
                         class="{{ request()->routeIs('siswa.create') ? 'nav-link active' : 'nav-link' }}">
@@ -65,7 +69,7 @@
         <div class="sidebar-footer">
             <div class="user-chip">
                 <div class="user-avatar">
-                    <i class="bi bi-person-fill"></i>
+                    {{ substr(auth()->user()->name, 0, 1) }}
                 </div>
                 <div class="user-info">
                     <div class="name">
@@ -85,9 +89,7 @@
         </div>
     </aside>
 
-    <!-- ══════════════════════════════════════════════
-        OFFCANVAS (mobile)
-    ══════════════════════════════════════════════════ -->
+    {{-- offcanvas --}}
     <div class="offcanvas offcanvas-start" tabindex="-1" id="mobileNav" aria-labelledby="mobileNavLabel">
         <div class="offcanvas-header">
             <div class="d-flex align-items-center gap-2">
@@ -111,24 +113,24 @@
                 @auth
                     @if (Auth::user()->role === 'admin')
                         <a href="{{ route('admin.dashboard') }}"
-                            class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : 'nav-link' }}"
-                            data-bs-dismiss="offcanvas">
-                            <i class="bi bi-grid-1x2-fill"></i> Menu
+                            class="{{ request()->routeIs('admin.dashboard') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="bi bi-grid-1x2-fill"></i> Reports
+                        </a>
+                        <a href="{{ route('admin.users.index') }}"
+                            class="{{ request()->routeIs('admin.users.index') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="bi bi-person-fill"></i> Users
                         </a>
                     @else
                         <a href="{{ route('siswa.dashboard') }}"
-                            class="{{ request()->routeIs('siswa.dashboard') ? 'nav-link active' : 'nav-link' }}"
-                            data-bs-dismiss="offcanvas">
-                            <i class="bi bi-grid-1x2-fill"></i> Menu
+                            class="{{ request()->routeIs('siswa.dashboard') ? 'nav-link active' : 'nav-link' }}">
+                            <i class="bi bi-grid-1x2-fill"></i> Laporan
                         </a>
                         <a href="{{ route('siswa.create') }}"
-                            class="{{ request()->routeIs('siswa.create') ? 'nav-link active' : 'nav-link' }}"
-                            data-bs-dismiss="offcanvas">
+                            class="{{ request()->routeIs('siswa.create') ? 'nav-link active' : 'nav-link' }}">
                             <i class="bi bi-plus-square-fill"></i> Tambah Laporan
                         </a>
                         <a href="{{ route('siswa.settings.edit') }}"
-                            class="{{ request()->routeIs('siswa.settings') ? 'nav-link active' : 'nav-link' }}"
-                            data-bs-dismiss="offcanvas">
+                            class="{{ request()->routeIs('siswa.settings.edit') ? 'nav-link active' : 'nav-link' }}">
                             <i class="bi bi-gear-fill"></i> Pengaturan
                         </a>
                     @endif
@@ -146,7 +148,7 @@
             <div class="sidebar-footer mt-auto" style="position:absolute;bottom:0;left:0;right:0;">
                 <div class="user-chip">
                     <div class="user-avatar">
-                        <i class="bi bi-person-fill"></i>
+                        {{ substr(auth()->user()->name, 0, 1) }}
                     </div>
                     <div class="user-info">
                         <div class="name">
@@ -180,6 +182,8 @@
                         Detail Laporan
                     @elseif (request()->routeIs('siswa.settings.edit'))
                         Pengaturan
+                    @elseif (request()->routeIs('admin.users.index'))
+                        List User Account
                     @endif
                 </h2>
                 <p>{{ now('Asia/Jakarta')->format('d M Y') }}</p>
@@ -215,7 +219,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
     </script>
-    
+
     <script>
         document.getElementById('mobileNav')
             ?.querySelectorAll('.nav-link:not(.logout)')
@@ -239,18 +243,10 @@
                     }
                 });
             });
-
-        // function updateClock() {
-        //   const options = { timeZone: 'Asia/Jakarta', hour12: false };
-        //   const now = new Date().toLocaleString('id-ID', options);
-        //   document.getElementById('clock').innerText = now;
-        // }
-        // updateClock();
-        // setInterval(updateClock, 1000);
     </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        @if(session('success'))
+        @if (session('success'))
             Swal.fire({
                 icon: "success",
                 title: "BERHASIL",
@@ -258,7 +254,7 @@
                 showConfirmButton: false,
                 timer: 2000
             });
-        @elseif(session('error'))
+        @elseif (session('error'))
             Swal.fire({
                 icon: "error",
                 title: "GAGAL!",

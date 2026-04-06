@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserSettingController;
@@ -50,6 +51,7 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
 
     Route::get('/settings', [UserSettingController::class, 'edit'])->name('settings.edit');
     Route::put('/settings', [UserSettingController::class, 'update'])->name('settings.update');
+    Route::delete('/settings', [UserSettingController::class, 'destroy'])->name('settings.destroy');
 });
 
 // =================================================
@@ -61,4 +63,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('panel')->name('admin.')->grou
     Route::post('/report/{id}/status', [AdminReportController::class, 'updateStatus'])->name('status');
     Route::post('/report/{id}/comment', [AdminReportController::class, 'comment'])->name('comment');
     Route::delete('/report/{id}', [AdminReportController::class, 'destroy'])->name('destroy');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 });

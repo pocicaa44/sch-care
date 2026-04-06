@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Comment;
 use App\Models\Report;
+use App\Notifications\NewComment;
+use App\Notifications\ReportStatusUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -48,6 +50,11 @@ class AdminReportController extends Controller
             $report->update(['status_changed_at' => now()]);
         }
 
+        // 🔔 Kirim notifikasi ke siswa jika status berubah dan user memiliki FCM token
+        if ($oldStatus !== $newStatus && $report->user && $report->user->fcm_token) {
+            $report->user->notify(new ReportStatusUpdated($report));
+        }
+
         return back()->with('success', 'Status laporan berhasil diperbarui.');
     }
 
@@ -63,11 +70,16 @@ class AdminReportController extends Controller
             $report->update(['status' => 'diproses']);
         }
 
-        Comment::create([
+        $comment = Comment::create([
             'report_id' => $id,
             'user_id' => Auth::id(),
             'content' => $request->content,
         ]);
+
+        // 🔔 Kirim notifikasi ke siswa jika ada komentar baru dan user memiliki FCM token
+        if ($report->user && $report->user->fcm_token) {
+            $report->user->notify(new NewComment($report, $comment));
+        }
 
         return back()->with('success', 'Komentar berhasil ditambahkan.');
     }

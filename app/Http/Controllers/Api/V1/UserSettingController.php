@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 
 class UserSettingController extends Controller
 {
-    public function show() 
+    public function show()
     {
         $user = Auth::user();
 
@@ -33,7 +33,7 @@ class UserSettingController extends Controller
             'message' => 'Pengaturan berhasil diubah',
             'data' => [
                 'auto_delete_days' => $user->auto_delete_days,
-            ]
+            ],
         ]);
     }
 }
