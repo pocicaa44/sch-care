@@ -18,7 +18,7 @@ class ReportController extends Controller
 
     public function index()
     {
-        $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('comments.user')->latest()->paginate(6);
+        $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('responses.user')->latest()->paginate(6);
 
         return view('siswa.dashboard', compact('reports'));
     }
@@ -30,7 +30,7 @@ class ReportController extends Controller
 
     public function show($id)
     {
-        $report = Report::where('user_id', Auth::id())->visibleToUser()->with(['comments.user', 'images'])->findOrFail($id);
+        $report = Report::where('user_id', Auth::id())->visibleToUser()->with(['responses.user', 'images'])->findOrFail($id);
 
         return view('siswa.show', compact('report'));
     }

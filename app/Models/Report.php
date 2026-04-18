@@ -25,9 +25,9 @@ class Report extends Model
     return $this->belongsTo(User::class);
   }
 
-  public function comments()
+  public function responses()
   {
-    return $this->hasMany(Comment::class);
+    return $this->hasMany(Response::class);
   }
 
   public function images()

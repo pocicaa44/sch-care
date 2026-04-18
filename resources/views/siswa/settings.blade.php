@@ -142,7 +142,7 @@
                                     <div class="dtitle">Hapus Akun</div>
                                     <div class="ddesc">Akun dan seluruh data kamu akan dihapus secara permanen</div>
                                 </div>
-                                <button class="btn-danger" data-bs-toggle="modal" data-bs-target="#confirmPassword">
+                                <button class="btn btn-danger px-3 text-white shadow rounded-3" data-bs-toggle="modal" data-bs-target="#confirmPassword">
                                     <i class="bi bi-person-x me-1"></i> Hapus Akun
                                 </button>
                             </div>

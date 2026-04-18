@@ -54,7 +54,7 @@ class ReportController extends Controller
     {
         $report = Report::where('user_id', Auth::id())
             ->whereNull('deleted_by_user_at')
-            ->with(['comments.user', 'images'])
+            ->with(['responses.user', 'images'])
             ->findOrFail($id);
 
         return new ReportResource($report);

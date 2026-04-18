@@ -11,7 +11,7 @@ class AdminUserController extends Controller
     public function index()
     {
         $users = User::where('role', 'siswa')->withTrashed()->paginate(20);
-        return view('admin.users.index', compact('users'));
+        return view('admin.users', compact('users'));
     }
 
     public function destroy($id)

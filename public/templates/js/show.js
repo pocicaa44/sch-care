@@ -7,12 +7,14 @@ let currentIndex = 0;
 function openLightbox(index) {
     currentIndex = index;
     updateLightbox();
-    document.getElementById("lightbox").classList.add("open");
+    document.getElementById("lightbox").classList.add("d-flex");
+    document.getElementById("lightbox").classList.remove("d-none");
     document.body.style.overflow = "hidden";
 }
 
 function closeLightbox() {
-    document.getElementById("lightbox").classList.remove("open");
+    document.getElementById("lightbox").classList.remove("d-flex");
+    document.getElementById("lightbox").classList.add("d-none");
     document.body.style.overflow = "";
 }
 
@@ -27,8 +29,7 @@ function lightboxNav(dir) {
 
 function updateLightbox() {
     document.getElementById("lightboxImg").src = photos[currentIndex];
-    document.getElementById("lightboxCounter").textContent =
-        `${currentIndex + 1} / ${photos.length}`;
+    document.getElementById("lightboxCounter").textContent =`${currentIndex + 1} / ${photos.length}`;
 }
 
 // Keyboard navigation

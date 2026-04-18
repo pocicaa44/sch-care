@@ -60,9 +60,9 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
 Route::middleware(['auth', 'role:admin'])->prefix('panel')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminReportController::class, 'index'])->name('dashboard');
     Route::get('/report/{id}', [AdminReportController::class, 'show'])->name('show');
-    Route::post('/report/{id}/status', [AdminReportController::class, 'updateStatus'])->name('status');
-    Route::post('/report/{id}/comment', [AdminReportController::class, 'comment'])->name('comment');
+    Route::post('/report/{id}/status', [AdminReportController::class, 'updateStatus'])->name('update-status');
+    Route::post('/report/{id}/response', [AdminReportController::class, 'storeResponse'])->name('response');
     Route::delete('/report/{id}', [AdminReportController::class, 'destroy'])->name('destroy');
-    Route::get('/users', [AdminUserController::class, 'index'])->name('users.index');
+    Route::get('/users', [AdminUserController::class, 'index'])->name('users');
     Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
 });

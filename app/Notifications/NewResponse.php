@@ -2,25 +2,25 @@
 
 namespace App\Notifications;
 
-use App\Models\Comment;
 use App\Models\Report;
+use App\Models\Response;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use NotificationChannels\Fcm\FcmChannel;
 use NotificationChannels\Fcm\FcmMessage;
 use NotificationChannels\Fcm\Resources\Notification as FcmNotification;
 
-class NewComment extends Notification
+class NewResponse extends Notification
 {
     use Queueable;
 
     protected Report $report;
-    protected Comment $comment;
+    protected Response $adminResponse;
 
-    public function __construct(Report $report, Comment $comment)
+    public function __construct(Report $report, Response $adminResponse)
     {
         $this->report = $report;
-        $this->comment = $comment;
+        $this->adminResponse = $adminResponse;
     }
 
     public function via(object $notifiable): array
@@ -31,22 +31,22 @@ class NewComment extends Notification
     public function toFcm(object $notifiable): FcmMessage
     {
         // Ambil nama admin yang berkomentar
-        $adminName = $this->comment->user?->name ?? 'Admin';
+        $adminName = $this->adminResponse->user?->name ?? 'Admin';
 
         // Potong komentar jika terlalu panjang (max 100 karakter)
-        $commentPreview = strlen($this->comment->content) > 100 
-            ? substr($this->comment->content, 0, 100) . '...' 
-            : $this->comment->content;
+        $responsePreview = strlen($this->adminResponse->content) > 100 
+            ? substr($this->adminResponse->content, 0, 100) . '...' 
+            : $this->adminResponse->content;
 
         return new FcmMessage(
             data: [
-                'type' => 'new_comment',
+                'type' => 'new_response',
                 'report_id' => (string) $this->report->id,
-                'comment_id' => (string) $this->comment->id,
+                'response_id' => (string) $this->adminResponse->id,
             ],
             notification: new FcmNotification(
                 title: 'Komentar Baru dari Admin',
-                body: "{$adminName}: {$commentPreview}",
+                body: "{$adminName}: {$responsePreview}",
             )
         );
     }

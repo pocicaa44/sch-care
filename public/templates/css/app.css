@@ -470,7 +470,7 @@ body {
 .report-card {
     background: var(--white);
     border: 1px solid var(--gray-200);
-    border-radius: 16px;
+    border-radius: 10px;
     overflow: hidden;
     transition: box-shadow 0.22s, transform 0.22s;
     height: 100%;
@@ -687,6 +687,11 @@ body {
     box-shadow: 0 4px 14px rgba(220, 38, 38, 0.3);
     color: #fff;
 }
+
+.pagination {
+    gap: 5px;
+}
+
 .pagination .page-link {
     border-radius: 8px !important;
     margin: 0 2px;
@@ -1557,7 +1562,6 @@ input:checked + .toggle-slider::before {
 }
 .photo-thumb {
     aspect-ratio: 1;
-    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
     position: relative;
@@ -2230,6 +2234,7 @@ input:checked + .toggle-slider::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    flex-wrap: wrap;
     gap: 16px;
     padding: 12px 0;
     border-bottom: 1px solid var(--red-light);
@@ -2248,21 +2253,7 @@ input:checked + .toggle-slider::before {
     color: var(--gray-400);
     margin-top: 2px;
 }
-.btn-danger {
-    padding: 7px 16px;
-    border-radius: 8px;
-    border: 1.5px solid var(--red-mid);
-    background: var(--white);
-    color: var(--red-vivid);
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    white-space: nowrap;
-    transition: all 0.15s;
-}
-.btn-danger:hover {
-    background: var(--red-light);
-}
+
 
 /* Buttons for settings */
 .btn-save {

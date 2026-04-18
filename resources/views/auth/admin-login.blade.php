@@ -28,7 +28,7 @@
 
 <div class="alert alert-warning">
   <strong>Akses Khusus Admin!</strong> 
-   Area ini hanya untuk administrator yang berwenang. Semua aktivitas dicatat dan dipantau. Akses tidak sah atau penyalahgunaan akan ditindak lanjuti, termasuk kemungkinan proses hukum. Dengan melanjutkan, Anda menyetujui pemantauan.
+   Area ini hanya untuk administrator yang berwenang.
 </div>
 
 <div class="card shadow-sm login-card">
@@ -55,7 +55,7 @@
                 <input type="password" name="password" class="form-control" required>
             </div>
             <div class="d-grid gap-2">
-                <button type="submit" class="btn btn-dark">Login as Admin</button>
+                <button type="submit" class="btn btn-dark">Login</button>
             </div>
         </form>
         

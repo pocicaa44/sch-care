@@ -1,133 +1,260 @@
-@extends('layouts.app')
+@extends('layouts.admin')
 
-@section('title', 'Dashboard Admin')
+@section('pageTitle', 'Dashboard Laporan')
 
 @section('content')
-
-
-    <main class="page-body">
-
-        <!-- STATS -->
-        <div class="row g-3 mb-4">
-            <div class="col-6 col-lg-3">
-                <div class="stat-card fade-up">
-                    <div class="stat-icon red"><i class="bi bi-file-earmark-text"></i></div>
-                    <div>
-                        <div class="stat-val">{{ $stats['total'] }}</div>
-                        <div class="stat-lbl">Total Laporan</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="stat-card fade-up">
-                    <div class="stat-icon yellow"><i class="bi bi-hourglass-split"></i></div>
-                    <div>
-                        <div class="stat-val">{{ $stats['pending'] }}</div>
-                        <div class="stat-lbl">Pending</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="stat-card fade-up">
-                    <div class="stat-icon blue"><i class="bi bi-arrow-repeat"></i></div>
-                    <div>
-                        <div class="stat-val">{{ $stats['diproses'] }}</div>
-                        <div class="stat-lbl">Diproses</div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-6 col-lg-3">
-                <div class="stat-card fade-up">
-                    <div class="stat-icon green"><i class="bi bi-check-circle"></i></div>
-                    <div>
-                        <div class="stat-val">{{ $stats['selesai'] }}</div>
-                        <div class="stat-lbl">Selesai</div>
+    <!-- ========================================
+         Kartu Statistik
+         ======================================== -->
+    <div class="row g-3 mb-4">
+        {{-- Total Laporan --}}
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card-dark stat-card stat-total">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon icon-total">
+                            <i class="bi bi-file-earmark-bar-graph-fill"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ $stats['total'] ?? 0 }}</div>
+                            <div class="stat-label">Total Laporan</div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- CARDS GRID -->
-        <div class="row g-3">
 
-
-
-            @forelse ($reports as $index => $report)
-                <div class="col-12 col-md-6 col-xl-4">
-
-                    <div class="report-card fade-up">
-                        <div
-                            class="card-accent 
-                            @if ($report->status == 'pending') pending
-                            @elseif ($report->status == 'diproses') diproses                                
-                            @elseif ($report->status == 'ditolak') ditolak                                
-                            @else selesai @endif">
+        {{-- Pending --}}
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card-dark stat-card stat-pending">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon icon-pending">
+                            <i class="bi bi-hourglass-split"></i>
                         </div>
-                        <div class="card-body-custom">
-                            <div class="card-meta">
-                                <span class="report-id">
-                                    @if ($report->is_anonymous)
-                                        Anonim
-                                    @else
-                                        {{ $report->user->name ?? 'Akun Terhapus' }}
-                                    @endif
-                                </span>
-                                @if ($report->status === 'pending')
-                                    <span class="badge-status badge-pending"><i class="bi bi-clock me-1"></i>Pending</span>
-                                @elseif ($report->status === 'diproses')
-                                    <span class="badge-status badge-diproses"><i
-                                            class="bi bi-arrow-repeat me-1"></i>Diproses</span>
-                                @elseif ($report->status === 'selesai')
-                                    <span class="badge-status badge-selesai"><i
-                                            class="bi bi-check-circle me-1"></i>Selesai</span>
-                                @elseif ($report->status === 'ditolak')
-                                    <span class="badge-status badge-ditolak"><i
-                                            class="bi bi-x-circle me-1"></i>Ditolak</span>
-                                @endif
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <div class="report-title">{{ $report->title }}</div>
-                                @if ($report->deleted_by_user_at)
-                                <span class="text-body-tertiary fst-italic">Deleted</span>
-                                @endif
-                            </div>
-                            <div class="report-desc">
-                                {{ $report->description }}
-                            </div>
-                            <div class="report-location">
-                                <i class="bi bi-geo-alt-fill"></i> {{ $report->location }}
-                            </div>
-                            <div class="card-date">
-                                <i class="bi bi-calendar3"></i> {{ $report->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}
-                            </div>
-                        </div>
-                        <div class="card-footer-custom">
-                            <a href="{{ route('admin.show', $report->id) }}" class="btn-detail">
-                                <i class="bi bi-eye"></i>
-                                Detail
-                            </a>
-                            @if ($report->deleted_by_user_at)
-                                <form action="{{ route('admin.destroy', $report->id) }}" method="POST"
-                                    onsubmit="return confirm('Yakin hapus laporan ini?')" style="display:inline">
-                                    @csrf @method('DELETE')
-                                    <button class="btn-hapus"><i class="bi bi-trash3"></i> Hapus</button>
-                                </form>
-                            @else
-                                <button class="btn-hapus disabled" disabled><i class="bi bi-trash3"></i> Hapus</button>
-                            @endif
+                        <div>
+                            <div class="stat-value">{{ $stats['pending'] ?? 0 }}</div>
+                            <div class="stat-label">Pending</div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-            @empty
+        {{-- Diproses --}}
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card-dark stat-card stat-diproses">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon icon-diproses">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ $stats['diproses'] ?? 0 }}</div>
+                            <div class="stat-label">Diproses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-                <span class="text-center">Tidak ada laporan</span>
-            @endforelse
-    </main>
+        {{-- Selesai --}}
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card-dark stat-card stat-selesai">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon icon-selesai">
+                            <i class="bi bi-check-circle-fill"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ $stats['selesai'] ?? 0 }}</div>
+                            <div class="stat-label">Selesai</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- Ditolak --}}
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card-dark stat-card stat-ditolak">
+                <div class="card-body">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="stat-icon icon-ditolak">
+                            <i class="bi bi-x-circle-fill"></i>
+                        </div>
+                        <div>
+                            <div class="stat-value">{{ $stats['ditolak'] ?? 0 }}</div>
+                            <div class="stat-label">Ditolak</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    <!-- ========================================
+         Tabel Daftar Laporan
+         ======================================== -->
+    <div class="card-dark" style="cursor:default;" onmouseover="this.style.transform='none'" onmouseout="this.style.transform='none'">
+        <div class="card-body">
+            {{-- Header: Judul + Filter --}}
+            <div class="d-flex align-items-start justify-content-between flex-wrap gap-3 mb-3">
+                <div>
+                    <h5 class="mb-1" style="font-size:16px; font-weight:600;">Daftar Laporan</h5>
+                    <p style="font-size:13px; color:var(--text-muted); margin:0;">
+                        Menampilkan semua laporan dari siswa
+                    </p>
+                </div>
+            </div>
+
+            {{-- Baris Filter & Pencarian --}}
+            <form method="GET" action="{{ request()->fullUrlWithoutQuery(['search', 'status']) }}" class="filter-bar mb-3">
+                <div class="search-input-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text"
+                           name="search"
+                           class="form-control form-control-dark"
+                           placeholder="Cari judul laporan atau nama siswa..."
+                           value="{{ $searchTerm }}"
+                           autocomplete="off">
+                </div>
+
+                <select name="status" class="form-select form-select-dark auto-submit" style="width:auto; min-width:160px;">
+                    <option value="all" {{ $statusFilter == 'all' || is_null($statusFilter) ? 'selected' : '' }}>Semua Laporan</option>
+                    <option value="pending" {{ $statusFilter == 'pending' ? 'selected' : '' }}>Pending ({{ $stats['pending'] }})</option>
+                    <option value="diproses" {{ $statusFilter == 'diproses' ? 'selected' : '' }}>Diproses ({{ $stats['diproses'] }})</option>
+                    <option value="selesai" {{ $statusFilter == 'selesai' ? 'selected' : '' }}>Selesai ({{ $stats['selesai'] }})</option>
+                    <option value="ditolak" {{ $statusFilter == 'ditolak' ? 'selected' : '' }}>Ditolak ({{ $stats['ditolak'] }})</option>
+                </select>
+
+                @if (request('search') || request('status'))
+                    <a href="{{ request()->fullUrlWithoutQuery(['search', 'status']) }}"
+                       class="btn-action btn-detail"
+                       style="white-space:nowrap;">
+                        <i class="bi bi-x-lg"></i> Reset
+                    </a>
+                @endif
+            </form>
+
+            {{-- Tabel --}}
+            <div class="table-responsive">
+                @if ($reports->count() > 0)
+                    <table class="table-dark-custom">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nama Siswa</th>
+                                <th>Judul Laporan</th>
+                                <th>Status</th>
+                                <th>Tanggal Dibuat</th>
+                                <th style="text-align:center;">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($reports as $report)
+                                <tr>
+                                    <td>
+                                        <span style="color:var(--text-muted); font-weight:500;">#{{ $report->id }}</span>
+                                    </td>
+                                    <td>{{ $report->user->name ?? '-' }}</td>
+                                    <td>
+                                        <span style="font-weight:500;">
+                                            {{ Str::limit($report->title, 50) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        @php
+                                            $statusClass = match($report->status) {
+                                                'pending'  => 'badge-pending',
+                                                'diproses' => 'badge-diproses',
+                                                'selesai'  => 'badge-selesai',
+                                                'ditolak'  => 'badge-ditolak',
+                                                default    => 'badge-dihapus-user',
+                                            };
+                                            $statusLabel = match($report->status) {
+                                                'pending'  => 'Pending',
+                                                'diproses' => 'Diproses',
+                                                'selesai'  => 'Selesai',
+                                                'ditolak'  => 'Ditolak',
+                                                default    => 'Dihapus',
+                                            };
+                                        @endphp
+                                        <span class="badge-status {{ $statusClass }}">
+                                            <span class="dot"></span>
+                                            {{ $statusLabel }}
+                                        </span>
+                                    </td>
+                                    <td style="color:var(--text-secondary); white-space:nowrap;">
+                                        {{ $report->created_at->format('d M Y, H:i') }}
+                                    </td>
+                                    <td style="text-align:center; white-space:nowrap;">
+                                        <a href="{{ route('admin.show', $report->id) }}"
+                                           class="btn-action btn-detail"
+                                           title="Detail Laporan">
+                                            <i class="bi bi-eye"></i>
+                                            <span class="d-none d-md-inline">Detail</span>
+                                        </a>
+
+                                        @if ($report->deleted_at)
+                                            <button type="button"
+                                                    class="btn-action btn-delete"
+                                                    title="Hapus Permanen"
+                                                    onclick="confirmDelete(
+                                                        '{{ route('admin.destroy', $report->id) }}',
+                                                        'Hapus laporan "{{ Str::limit($report->title, 30) }}" secara permanen?'
+                                                    )">
+                                                <i class="bi bi-trash3"></i>
+                                            </button>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @else
+                    <div class="empty-state">
+                        <i class="bi bi-inbox d-block"></i>
+                        <p>Tidak ada laporan ditemukan.</p>
+                    </div>
+                @endif
+            </div>
+
+            {{-- Paginasi --}}
+            @if ($reports->hasPages())
+                <div class="pagination-wrapper">
+                    <div class="pagination-info">
+                        Menampilkan {{ $reports->firstItem() }}–{{ $reports->lastItem() }}
+                        dari {{ $reports->total() }} laporan
+                    </div>
+                    <div>
+                        {{ $reports->onEachSide(1)->links() }}
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('templates/js/script.js') }}"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous">
+    {{-- Override style pagination links agar cocok dengan dark theme --}}
+    <style>
+        .pagination-dark li a,
+        .pagination-dark li span {
+            display: inline-flex;
+        }
+    </style>
+
+    <script>
+        // Terapkan class pagination-dark ke elemen pagination Laravel
+        document.querySelectorAll('.pagination').forEach(el => {
+            el.classList.remove('pagination');
+            el.classList.add('pagination-dark');
+        });
+
+        // Hapus link wrapper yang tidak perlu (prev/next text Laravel)
+        document.querySelectorAll('.pagination-dark a, .pagination-dark span').forEach(el => {
+            // Bersihkan HTML entities yang mungkin ada
+            el.innerHTML = el.innerHTML.replace(/&laquo;/g, '‹').replace(/&raquo;/g, '›');
+        });
     </script>
 @endpush

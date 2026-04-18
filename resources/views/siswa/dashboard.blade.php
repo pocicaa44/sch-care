@@ -54,16 +54,21 @@
                                 {{ $report->created_at->timezone('Asia/Jakarta')->format('d M Y H:i') }}
                             </div>
                         </div>
-                        <div class="card-footer-custom">
-                            <a href="{{ route('siswa.show', $report->id) }}" class="btn-detail"><i class="bi bi-eye"></i>
-                                Detail</a>
+                        <div class="card-footer d-flex gap-2 w-100 p-3">
+                            <a href="{{ route('siswa.show', $report->id) }}" class="btn btn-danger {{ $report->status !== 'diproses' ? 'w-50' : 'w-100' }}">
+                                <i class="bi bi-eye me-2"></i>
+                                <span class="fs-6 fw-bold">Detail</span>
+                            </a>
                             @if ($report->status !== 'diproses')
-                                <form action="{{ route('siswa.destroy', $report->id) }}" method="POST" style="display:inline">
+                                <form action="{{ route('siswa.destroy', $report->id) }}" method="POST" class="w-50">
                                     @csrf @method('DELETE')
-                                    <button class="btn-hapus"><i class="bi bi-trash3"></i> Hapus</button>
+                                    <button class="btn btn-light w-100 text-secondary" style="pointer: disabled;">
+                                        <i class="bi bi-trash3 me-2"></i>  
+                                        <span class="fs-6 fw-bold text-secondary">Hapus</span>
+                                    </button>
                                 </form>
-                            @else
-                                <button class="btn-hapus disabled" disabled><i class="bi bi-trash3"></i> Hapus</button>
+                            {{-- @else
+                                <button class="btn btn-light w-50" disabled><i class="bi bi-trash3"></i> Hapus</button> --}}
                             @endif
                         </div>
                     </div>

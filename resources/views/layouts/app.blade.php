@@ -56,9 +56,9 @@
 
             <div class="nav-divider"></div>
             <div class="nav-label">Akun</div>
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('logout') }}" class="">
                 @csrf
-                <button type="submit" class="nav-link logout">
+                <button type="submit" class="nav-link w-100">
                     <i class="bi bi-box-arrow-left"></i>
                     Logout
                 </button>
@@ -182,6 +182,8 @@
                         Detail Laporan
                     @elseif (request()->routeIs('siswa.settings.edit'))
                         Pengaturan
+                    @elseif (request()->routeIs('siswa.edit'))
+                        Edit Laporan
                     @elseif (request()->routeIs('admin.users.index'))
                         List User Account
                     @endif
