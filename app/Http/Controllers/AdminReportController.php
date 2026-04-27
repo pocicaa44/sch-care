@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ReportStatusUpdatedEvent;
 use App\Models\Report;
 use App\Models\Response;
 use App\Notifications\NewResponse;
@@ -92,12 +93,14 @@ class AdminReportController extends Controller
             $report->update(['status_changed_at' => now()]);
         }
 
+        event(new ReportStatusUpdatedEvent($report, $report->user_id));
+
         // 🔔 Kirim notifikasi ke siswa jika status berubah dan user memiliki FCM token
         if ($oldStatus !== $newStatus && $report->user && $report->user->fcm_token) {
             $report->user->notify(new ReportStatusUpdated($report));
         }
 
-        return back()->with('success', 'Status laporan berhasil diperbarui.');
+        return back()->with('success', 'Status laporan berhasil diperbarui.')->with('replace', true);
     }
 
     public function storeResponse(Request $request, $id)
@@ -108,7 +111,6 @@ class AdminReportController extends Controller
             'attachments.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        // dd($request->allFiles());
 
         $report = Report::findOrFail($id);
 
@@ -134,7 +136,7 @@ class AdminReportController extends Controller
             $report->user->notify(new NewResponse($report, $adminResponse));
         }
 
-        return back()->with('success', 'Komentar berhasil ditambahkan.');
+        return back()->with('success', 'Komentar berhasil ditambahkan.')->with('replace', true);
     }
 
     public function destroy($id)

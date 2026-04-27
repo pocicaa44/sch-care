@@ -11,6 +11,7 @@
         "kreait/laravel-firebase": "^7.1",
         "laravel-notification-channels/fcm": "^6.1",
         "laravel/framework": "^12.0",
+        "laravel/reverb": "*",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "thedevsaddam/laravel-schema": "^2.0"

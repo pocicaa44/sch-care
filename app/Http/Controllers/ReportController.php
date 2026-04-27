@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewReportEvent;
+use App\Events\ReportUpdatedEvent;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use App\Http\Requests\StoreReportRequest;
 use App\Http\Requests\UpdateReportRequest;
 use App\Models\Report;
-use App\Policies\ReportPolicy;
 use App\Services\ReportService;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Reverb\Loggers\Log;
 
 class ReportController extends Controller
 {
@@ -49,6 +51,9 @@ class ReportController extends Controller
             $images,
         );
 
+        Log::info('Event NewReportEvent dipanggil untuk report ID: ' . $report->id);
+        event(new NewReportEvent($report));
+
         return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dibuat');
     }
 
@@ -79,8 +84,11 @@ class ReportController extends Controller
             $request->input('deleted_images', []) // ID gambar yang dihapus
         );
 
+        event(new ReportUpdatedEvent($report));
+
         return redirect()->route('siswa.show', $updatedReport->id)
-            ->with('success', 'Laporan berhasil diperbarui');
+            ->with('success', 'Laporan berhasil diperbarui')
+            ->with('replace', true);
     }
 
     public function destroy($id)
@@ -97,6 +105,6 @@ class ReportController extends Controller
             $report->deleteByAdmin();
         }
 
-        return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dihapus.');
+        return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dihapus.')->with('replace', true);
     }
 }

@@ -35,7 +35,7 @@ class AuthController extends Controller
                 Auth::logout();
                 return back()->with('error', 'akun ini bukan akun untuk siswa');
             }
-            return redirect()->route('siswa.dashboard');
+            return redirect()->route('siswa.dashboard')->with('replace', true);
         }
         
         return back()->with('error', 'email atau password salah');
@@ -89,6 +89,6 @@ class AuthController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect()->route('login');
+        return redirect()->route('/')->with('replace', true);
     }
 }

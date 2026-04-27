@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id" data-bs-theme="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -15,7 +16,7 @@
 
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
-
+    @vite(['resources/js/app.js'])
     <style>
         /* ========================================
            CSS Variables — Light Theme
@@ -66,10 +67,23 @@
         }
 
         /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--bg-body); }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-body);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
 
         /* ========================================
            Sidebar
@@ -262,7 +276,7 @@
         .btn-sidebar-toggle:hover {
             color: var(--text-primary);
             border-color: var(--text-muted);
-            background: rgba(0,0,0,0.03);
+            background: rgba(0, 0, 0, 0.03);
         }
 
         .page-title {
@@ -364,12 +378,29 @@
             opacity: 0.1;
         }
 
-        .stat-card.stat-total::after { background: var(--accent); }
-        .stat-card.stat-pending::after { background: var(--warning); }
-        .stat-card.stat-diproses::after { background: var(--info); }
-        .stat-card.stat-selesai::after { background: var(--success); }
-        .stat-card.stat-ditolak::after { background: var(--danger); }
-        .stat-card.stat-dihapus::after { background: var(--text-muted); }
+        .stat-card.stat-total::after {
+            background: var(--accent);
+        }
+
+        .stat-card.stat-pending::after {
+            background: var(--warning);
+        }
+
+        .stat-card.stat-diproses::after {
+            background: var(--info);
+        }
+
+        .stat-card.stat-selesai::after {
+            background: var(--success);
+        }
+
+        .stat-card.stat-ditolak::after {
+            background: var(--danger);
+        }
+
+        .stat-card.stat-dihapus::after {
+            background: var(--text-muted);
+        }
 
         .stat-icon {
             width: 42px;
@@ -382,12 +413,35 @@
             flex-shrink: 0;
         }
 
-        .stat-icon.icon-total { background: var(--info-bg); color: var(--info); }
-        .stat-icon.icon-pending { background: var(--warning-bg); color: var(--warning); }
-        .stat-icon.icon-diproses { background: var(--info-bg); color: var(--info); }
-        .stat-icon.icon-selesai { background: var(--success-bg); color: var(--success); }
-        .stat-icon.icon-ditolak { background: var(--danger-bg); color: var(--danger); }
-        .stat-icon.icon-dihapus { background: rgba(156,163,175,0.12); color: var(--text-muted); }
+        .stat-icon.icon-total {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+
+        .stat-icon.icon-pending {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
+
+        .stat-icon.icon-diproses {
+            background: var(--info-bg);
+            color: var(--info);
+        }
+
+        .stat-icon.icon-selesai {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .stat-icon.icon-ditolak {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        .stat-icon.icon-dihapus {
+            background: rgba(156, 163, 175, 0.12);
+            color: var(--text-muted);
+        }
 
         .stat-value {
             font-size: 26px;
@@ -463,23 +517,59 @@
             flex-shrink: 0;
         }
 
-        .badge-pending { background: var(--warning-bg); color: var(--warning); }
-        .badge-pending .dot { background: var(--warning); }
+        .badge-pending {
+            background: var(--warning-bg);
+            color: var(--warning);
+        }
 
-        .badge-diproses { background: var(--info-bg); color: var(--info); }
-        .badge-diproses .dot { background: var(--info); }
+        .badge-pending .dot {
+            background: var(--warning);
+        }
 
-        .badge-selesai { background: var(--success-bg); color: var(--success); }
-        .badge-selesai .dot { background: var(--success); }
+        .badge-diproses {
+            background: var(--info-bg);
+            color: var(--info);
+        }
 
-        .badge-ditolak { background: var(--danger-bg); color: var(--danger); }
-        .badge-ditolak .dot { background: var(--danger); }
+        .badge-diproses .dot {
+            background: var(--info);
+        }
 
-        .badge-aktif { background: var(--success-bg); color: var(--success); }
-        .badge-aktif .dot { background: var(--success); }
+        .badge-selesai {
+            background: var(--success-bg);
+            color: var(--success);
+        }
 
-        .badge-dihapus-user { background: rgba(156,163,175,0.1); color: #6b7280; }
-        .badge-dihapus-user .dot { background: #6b7280; }
+        .badge-selesai .dot {
+            background: var(--success);
+        }
+
+        .badge-ditolak {
+            background: var(--danger-bg);
+            color: var(--danger);
+        }
+
+        .badge-ditolak .dot {
+            background: var(--danger);
+        }
+
+        .badge-aktif {
+            background: var(--success-bg);
+            color: var(--success);
+        }
+
+        .badge-aktif .dot {
+            background: var(--success);
+        }
+
+        .badge-dihapus-user {
+            background: rgba(156, 163, 175, 0.1);
+            color: #6b7280;
+        }
+
+        .badge-dihapus-user .dot {
+            background: #6b7280;
+        }
 
         /* ========================================
            Form Controls (Light)
@@ -675,7 +765,7 @@
             font-weight: 500;
             animation: slideInRight 0.3s ease;
             border: 1px solid;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
         }
 
         .flash-alert.flash-success {
@@ -713,8 +803,15 @@
         }
 
         @keyframes slideInRight {
-            from { transform: translateX(100%); opacity: 0; }
-            to { transform: translateX(0); opacity: 1; }
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
 
         /* ========================================
@@ -880,13 +977,17 @@
            Prefers Reduced Motion
            ======================================== */
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
+
+            *,
+            *::before,
+            *::after {
                 animation-duration: 0.01ms !important;
                 transition-duration: 0.01ms !important;
             }
         }
     </style>
 </head>
+
 <body>
 
     <!-- Flash Messages -->
@@ -935,21 +1036,20 @@
         <nav class="sidebar-nav">
             <div class="nav-label">Menu Utama</div>
             <a href="{{ route('admin.dashboard') }}"
-               class="nav-item-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+                class="nav-item-link {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="bi bi-file-earmark-text-fill"></i>
                 Laporan
             </a>
             <a href="{{ route('admin.users') }}"
-               class="nav-item-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
+                class="nav-item-link {{ request()->routeIs('admin.users') ? 'active' : '' }}">
                 <i class="bi bi-people-fill"></i>
                 User
             </a>
         </nav>
 
         <div class="sidebar-footer">
-            <a href="{{ route('logout') }}"
-               class="nav-item-link"
-               onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
+            <a href="{{ route('logout') }}" class="nav-item-link"
+                onclick="event.preventDefault(); document.getElementById('logoutForm').submit();">
                 <i class="bi bi-box-arrow-left"></i>
                 Logout
             </a>
@@ -1055,12 +1155,19 @@
         });
 
         document.querySelectorAll('.auto-submit').forEach(el => {
-            el.addEventListener('change', function () {
+            el.addEventListener('change', function() {
                 this.closest('form').submit();
             });
         });
     </script>
 
+    <script>
+        if (window.history.length > 1) {
+            window.history.replaceState({}, document.title, window.location.href);
+        }
+    </script>
+
     @stack('scripts')
 </body>
+
 </html>

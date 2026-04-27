@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="user-id" content="{{ auth()->id() }}" />
     <title>@yield('title')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
@@ -14,6 +15,7 @@
         href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('templates/css/app.css') }}">
+    @vite(['resources/js/app.js'])
     @stack('styles')
 </head>
 
@@ -266,6 +268,30 @@
             });
         @endif
     </script>
+    @if (session('replace'))
+        <script>
+            // Ganti history agar back tidak kembali ke halaman sebelumnya yang tidak valid
+            window.history.replaceState({}, document.title, window.location.href);
+        </script>
+    @endif
+
+    <script>
+        // Bonus: tangani back gesture dari halaman yang dihapus (deteksi 404)
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                // Halaman dimuat dari cache (misal karena back), cek apakah masih valid
+                fetch(window.location.href, {
+                        method: 'HEAD'
+                    })
+                    .then(response => {
+                        if (response.status === 404) {
+                            window.location.replace('{{ route('siswa.dashboard') }}');
+                        }
+                    });
+            }
+        });
+    </script>
+
 </body>
 
 </html>

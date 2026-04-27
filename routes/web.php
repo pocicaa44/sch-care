@@ -1,5 +1,6 @@
 <?php
 
+use App\Events\NewReportEvent;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
@@ -65,4 +66,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('panel')->name('admin.')->grou
     Route::delete('/report/{id}', [AdminReportController::class, 'destroy'])->name('destroy');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users');
     Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
+});
+
+use App\Events\TestEvent;
+use App\Models\Report;
+
+Route::get('/test-broadcast', function () {
+    event(new TestEvent('Halo dari route!'));
+    return 'Event telah dikirim, cek console browser.';
+});
+
+Route::get('/test-broadcast-report', function () {
+    $report = Report::latest()->first(); // ambil laporan terakhir
+    event(new NewReportEvent($report));
+    return 'Event NewReportEvent dikirim';
 });

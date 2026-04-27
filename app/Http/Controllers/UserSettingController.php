@@ -26,7 +26,8 @@ class UserSettingController extends Controller
         $user->update(['auto_delete_days' => $request->auto_delete_days]);
 
         return redirect()->route('siswa.settings.edit')
-            ->with('success', 'Pengaturan berhasil diubah. Laporan selesai/ditolak akan otomatis dihapus setelah '.$request->auto_delete_days.' hari.');
+            ->with('success', 'Pengaturan berhasil diubah. Laporan selesai/ditolak akan otomatis dihapus setelah '.$request->auto_delete_days.' hari.')
+            ->with('replace', true);
     }
 
     public function destroy(Request $request)
@@ -57,6 +58,6 @@ class UserSettingController extends Controller
         // Logout user setelah akun dihapus
         Auth::logout();
 
-        return redirect('/')->with('success', 'Akun Anda telah dihapus. Terima kasih.');
+        return redirect('login')->with('success', 'Akun Anda telah dihapus. Terima kasih.')->with('replace', true);
     }
 }
