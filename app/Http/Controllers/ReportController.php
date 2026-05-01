@@ -51,7 +51,7 @@ class ReportController extends Controller
             $images,
         );
 
-        Log::info('Event NewReportEvent dipanggil untuk report ID: ' . $report->id);
+        $report->load('user');
         event(new NewReportEvent($report));
 
         return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dibuat');

@@ -2,6 +2,8 @@
 
 return [
 
+    'app_key' => env('REVERB_APP_KEY'),
+
     /*
     |--------------------------------------------------------------------------
     | Default Reverb Server
