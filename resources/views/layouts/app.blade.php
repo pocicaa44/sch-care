@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="user-id" content="{{ auth()->id() }}" />
@@ -11,12 +12,10 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Roboto:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('templates/css/app.css') }}">
-    @vite(['resources/js/app.js'])
     @stack('styles')
+    @livewireStyles()
 </head>
 
 <body>
@@ -176,11 +175,11 @@
         <header class="topbar">
             <div class="topbar-title">
                 <h2>
-                    @if (request()->routeIs('admin.dashboard') || request()->routeIs('siswa.dashboard'))
+                    @if (request()->routeIs('siswa.dashboard'))
                         Main Menu
                     @elseif (request()->routeIs('siswa.create'))
                         Tambah Laporan
-                    @elseif (request()->routeIs('siswa.show') || request()->routeIs('admin.show'))
+                    @elseif (request()->routeIs('siswa.show'))
                         Detail Laporan
                     @elseif (request()->routeIs('siswa.settings.edit'))
                         Pengaturan
@@ -197,7 +196,7 @@
                     aria-controls="mobileNav">
                     <i class="bi bi-list"></i>
                 </button>
-                @if (auth()->user()->role !== 'admin' && request()->routeIs('siswa.dashboard'))
+                @if (auth()->user()->role === 'siswa' && !request()->routeIs('siswa.create'))
                     <a href="{{ route('siswa.create') }}" class="btn-tambah d-none d-md-inline-flex">
                         <i class="bi bi-plus-lg"></i> Tambah Laporan
                     </a>
@@ -205,6 +204,7 @@
             </div>
         </header>
 
+        {{ $slot ?? '' }} 
         @yield('content')
     </div>
 
@@ -212,7 +212,7 @@
         <a class="fab" href="{{ route('siswa.create') }}" aria-label="Tambah Laporan">
             <i class="bi bi-plus-lg"></i>
         </a>
-    @elseif (request()->routeIs('siswa.show'))
+    @elseif (request()->routeIs('siswa.show') && $report->status === 'pending')
         <a class="fab" href="{{ route('siswa.edit', $report->id) }}" aria-label="Edit Laporan">
             <i class="bi bi-pencil-square"></i>
         </a>
@@ -291,7 +291,7 @@
             }
         });
     </script>
-
+    @livewireScripts()
 </body>
 
 </html>

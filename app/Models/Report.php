@@ -15,6 +15,7 @@ class Report extends Model
     'evidence_path',
     'is_anonymous',
     'status',
+    'is_read',
     'deleted_by_user_at',
     'deleted_by_admin_at',
     'status_changed_at',

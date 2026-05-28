@@ -4,7 +4,7 @@
 
 @section('content')
     {{-- Tombol Kembali --}}
-    <a href="{{ URL::previous() }}" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-4"
+    <a href="{{ route('admin.dashboard') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-4"
         style="color:var(--text-secondary); font-size:13.5px; font-weight:500; transition: color 0.2s ease;"
         onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">
         <i class="bi bi-arrow-left" style="font-size:16px;"></i>

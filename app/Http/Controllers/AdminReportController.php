@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\ReportStatusUpdatedEvent;
 use App\Models\Report;
 use App\Models\Response;
 use App\Notifications\NewResponse;
@@ -13,66 +12,71 @@ use Illuminate\Support\Facades\Storage;
 
 class AdminReportController extends Controller
 {
-    public function index(Request $request)
-    {
-        $statusFilter = $request->input('status');
-        $rawSearch = $request->input('search');
+    // public function index(Request $request)
+    // {
+    //     $statusFilter = $request->input('status');
+    //     $rawSearch = $request->input('search');
 
-        // Sanitasi dan validasi search
-        $searchTerm = null;
-        if ($rawSearch) {
-            $rawSearch = trim($rawSearch);
-            if (strlen($rawSearch) < 2) {
-                return back()->with('error', 'Minimal 2 karakter untuk pencarian.');
-            }
-            // Escape wildcard LIKE
-            $searchTerm = str_replace(['%', '_'], ['\%', '\_'], $rawSearch);
-            // Batasi panjang
-            $searchTerm = substr($searchTerm, 0, 100);
-            // Hapus tag HTML
-            $searchTerm = strip_tags($searchTerm);
-        }
+    //     // Sanitasi dan validasi search
+    //     $searchTerm = null;
+    //     if ($rawSearch) {
+    //         $rawSearch = trim($rawSearch);
+    //         if (strlen($rawSearch) < 2) {
+    //             return back()->with('error', 'Minimal 2 karakter untuk pencarian.');
+    //         }
+    //         // Escape wildcard LIKE
+    //         $searchTerm = str_replace(['%', '_'], ['\%', '\_'], $rawSearch);
+    //         // Batasi panjang
+    //         $searchTerm = substr($searchTerm, 0, 100);
+    //         // Hapus tag HTML
+    //         $searchTerm = strip_tags($searchTerm);
+    //     }
 
-        $query = Report::visibleToAdmin();
+    //     $query = Report::visibleToAdmin();
 
-        // filter status
-        if ($statusFilter && $statusFilter !== 'all') {
-            $query->where('status', $statusFilter);
-        }
+    //     // filter status
+    //     if ($statusFilter && $statusFilter !== 'all') {
+    //         $query->where('status', $statusFilter);
+    //     }
 
-        // search bar
-        if ($searchTerm) {
-            $query->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'like', '%'.$searchTerm.'%')
-                    ->orWhere('description', 'like', '%'.$searchTerm.'%')
-                    ->orWhere('location', 'like', '%'.$searchTerm.'%')
-                    ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
-                        $userQuery->where('name', 'like', '%'.$searchTerm.'%');
-                    });
-            });
-        }
+    //     // search bar
+    //     if ($searchTerm) {
+    //         $query->where(function ($q) use ($searchTerm) {
+    //             $q->where('title', 'like', '%'.$searchTerm.'%')
+    //                 ->orWhere('description', 'like', '%'.$searchTerm.'%')
+    //                 ->orWhere('location', 'like', '%'.$searchTerm.'%')
+    //                 ->orWhereHas('user', function ($userQuery) use ($searchTerm) {
+    //                     $userQuery->where('name', 'like', '%'.$searchTerm.'%');
+    //                 });
+    //         });
+    //     }
 
-        $stats = [
-            'total' => Report::visibleToAdmin()->count(),
-            'pending' => Report::visibleToAdmin()->where('status', 'pending')->count(),
-            'diproses' => Report::visibleToAdmin()->where('status', 'diproses')->count(),
-            'selesai' => Report::visibleToAdmin()->where('status', 'selesai')->count(),
-            'ditolak' => Report::visibleToAdmin()->where('status', 'ditolak')->count(),
-        ];
+    //     $stats = [
+    //         'total' => Report::visibleToAdmin()->count(),
+    //         'pending' => Report::visibleToAdmin()->where('status', 'pending')->count(),
+    //         'diproses' => Report::visibleToAdmin()->where('status', 'diproses')->count(),
+    //         'selesai' => Report::visibleToAdmin()->where('status', 'selesai')->count(),
+    //         'ditolak' => Report::visibleToAdmin()->where('status', 'ditolak')->count(),
+    //         'unread' => Report::visibleToAdmin()->where('is_read', false)->count(),
+    //     ];
 
-        $reports = $query->with('user')->latest()->paginate(6);
+    //     $reports = $query->with('user')->latest()->paginate(6);
 
-        $reports->appends([
-            'status' => $statusFilter,
-            'search' => $searchTerm,
-        ]);
+    //     $reports->appends([
+    //         'status' => $statusFilter,
+    //         'search' => $searchTerm,
+    //     ]);
 
-        return view('admin.dashboard', compact('reports', 'stats', 'statusFilter', 'searchTerm'));
-    }
+    //     return view('admin.dashboard', compact('reports', 'stats', 'statusFilter', 'searchTerm'));
+    // }
 
     public function show($id)
     {
         $report = Report::visibleToAdmin()->with(['user', 'responses.user'])->findOrFail($id);
+
+        if(!$report->is_read) {
+            $report->update(['is_read' => true]);
+        }
 
         return view('admin.show', compact('report'));
     }
@@ -92,8 +96,6 @@ class AdminReportController extends Controller
         if (in_array($newStatus, ['selesai', 'ditolak']) && $oldStatus !== $newStatus) {
             $report->update(['status_changed_at' => now()]);
         }
-
-        event(new ReportStatusUpdatedEvent($report, $report->user_id));
 
         // 🔔 Kirim notifikasi ke siswa jika status berubah dan user memiliki FCM token
         if ($oldStatus !== $newStatus && $report->user && $report->user->fcm_token) {

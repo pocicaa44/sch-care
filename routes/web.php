@@ -6,17 +6,9 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserSettingController;
+use App\Livewire\Admin\ReportsIndex as AdminReportsIndex;
+use App\Livewire\Siswa\ReportsIndex as SiswaReportsIndex;
 use Illuminate\Support\Facades\Route;
-
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
-// =================================================
-// AREA PUBLIK
-// =================================================
 
 // 1. Halaman Utama (Login Siswa)
 Route::get('/', [AuthController::class, 'showLogin'])->name('login');
@@ -31,18 +23,15 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.po
 // 4. Logout
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-// =================================================
-// HALAMAN LOGIN ADMIN (URL: /admin)
-// =================================================
+// login admin area
+
 Route::get('/admin', [AuthController::class, 'showAdminLogin'])->name('admin.login');
-// Admin login
 Route::post('/admin', [AuthController::class, 'loginAdmin'])->name('admin.login.post');
 
-// =================================================
-// AREA SISWA (Prefix: /siswa)
-// =================================================
+// siswa
+
 Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->group(function () {
-    Route::get('/dashboard', [ReportController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', SiswaReportsIndex::class)->name('dashboard');
     Route::get('/create', [ReportController::class, 'create'])->name('create');
     Route::post('/store', [ReportController::class, 'store'])->name('store');
     Route::delete('/delete/{id}', [ReportController::class, 'destroy'])->name('destroy');
@@ -55,29 +44,13 @@ Route::middleware(['auth', 'role:siswa'])->prefix('siswa')->name('siswa.')->grou
     Route::delete('/settings', [UserSettingController::class, 'destroy'])->name('settings.destroy');
 });
 
-// =================================================
-// AREA ADMIN (Prefix: /panel -> Hasilnya URL: /panel/dashboard)
-// =================================================
+// admin panel
 Route::middleware(['auth', 'role:admin'])->prefix('panel')->name('admin.')->group(function () {
-    Route::get('/dashboard', [AdminReportController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard', AdminReportsIndex::class)->name('dashboard');
     Route::get('/report/{id}', [AdminReportController::class, 'show'])->name('show');
     Route::post('/report/{id}/status', [AdminReportController::class, 'updateStatus'])->name('update-status');
     Route::post('/report/{id}/response', [AdminReportController::class, 'storeResponse'])->name('response');
     Route::delete('/report/{id}', [AdminReportController::class, 'destroy'])->name('destroy');
     Route::get('/users', [AdminUserController::class, 'index'])->name('users');
     Route::delete('/users/{id}', [AdminUserController::class, 'destroy'])->name('users.destroy');
-});
-
-use App\Events\TestEvent;
-use App\Models\Report;
-
-Route::get('/test-broadcast', function () {
-    event(new TestEvent('Halo dari route!'));
-    return 'Event telah dikirim, cek console browser.';
-});
-
-Route::get('/test-broadcast-report', function () {
-    $report = Report::latest()->first(); // ambil laporan terakhir
-    event(new NewReportEvent($report));
-    return 'Event NewReportEvent dikirim';
 });

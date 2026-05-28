@@ -4,8 +4,8 @@
 
 @section('content')
     <!-- ========================================
-                         Kartu Statistik
-                         ======================================== -->
+                                     Kartu Statistik
+                                     ======================================== -->
     <div class="row g-3 mb-4">
         {{-- Total Laporan --}}
         <div class="col-6 col-md-4 col-xl-2">
@@ -93,8 +93,8 @@
         </div>
 
         <!-- ========================================
-                         Tabel Daftar Laporan
-                         ======================================== -->
+                                     Tabel Daftar Laporan
+                                     ======================================== -->
         <div class="card-dark" style="cursor:default;" onmouseover="this.style.transform='none'"
             onmouseout="this.style.transform='none'">
             <div class="card-body">
@@ -146,18 +146,21 @@
                         <table class="table-dark-custom" id="reports-table">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th class="text-center">ID</th>
                                     <th>Nama Siswa</th>
                                     <th>Judul Laporan</th>
                                     <th>Status</th>
                                     <th>Tanggal Dibuat</th>
-                                    <th style="text-align:center;">Aksi</th>
+                                    <th class="text-center">Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($reports as $report)
                                     <tr>
                                         <td>
+                                            @if (!$report->is_read)
+                                                <span class="badge bg-danger me-2">Baru</span>
+                                            @endif
                                             <span
                                                 style="color:var(--text-muted); font-weight:500;">#{{ $report->id }}</span>
                                         </td>
@@ -232,7 +235,6 @@
     @endsection
 
     @push('scripts')
-
         <script>
             // Hapus link wrapper yang tidak perlu (prev/next text Laravel)
             document.querySelectorAll('.pagination-dark a, .pagination-dark span').forEach(el => {
@@ -243,85 +245,5 @@
     @endpush
 
     @push('scripts')
-        <script>
-            function formatDate(dateString) {
-                const date = new Date(dateString);
-                const day = String(date.getDate()).padStart(2, '0');
-                const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                const month = monthNames[date.getMonth()];
-                const year = date.getFullYear();
-                const hours = String(date.getHours()).padStart(2, '0');
-                const minutes = String(date.getMinutes()).padStart(2, '0');
-                return `${day} ${month} ${year}, ${hours}:${minutes}`;
-            };
-            (function() {
-                // Konfigurasi
-                const APP_KEY = '{{ config('reverb.app_key') }}';
-                const WS_URL = `ws://localhost:8080/app/${APP_KEY}`;
-                let ws = null;
-                let reconnectTimer = null;
-
-                function connectWebSocket() {
-                    if (ws && ws.readyState === WebSocket.OPEN) return;
-                    ws = new WebSocket(WS_URL);
-                    ws.onopen = function() {
-                        console.log('✅ WebSocket connected');
-                        ws.send(JSON.stringify({
-                            event: 'pusher:subscribe',
-                            data: {
-                                channel: 'reports'
-                            }
-                        }));
-                        if (reconnectTimer) clearTimeout(reconnectTimer);
-                    };
-                    ws.onmessage = function(e) {
-                        const msg = JSON.parse(e.data);
-                        if (msg.event === 'new-report') {
-                            const data = JSON.parse(msg.data);
-                            const report = data.report;
-                            const tbody = document.querySelector('#reports-table tbody');
-                            if (!tbody) return;
-                            const newRow = `
-                        <tr>
-                            <td><span style="color:var(--text-muted);font-weight:500;">#${report.id}</span></td>
-                            <td>${escapeHtml(report.user.name ?? 'Unknown')} </td>
-                            <td><span style="font-weight:500;">${escapeHtml(report.title)}</span></td>
-                            <td><span class="badge-status badge-pending"><span class="dot"></span> Pending</span></td>
-                            <td style="color:var(--text-secondary); white-space:nowrap;">${formatDate(report.created_at)}</td>
-                            <td style="text-align:center; white-space:nowrap;"><a href="/panel/report/${report.id}" class="btn-action btn-detail"><i class="bi bi-eye"></i><span class="d-none d-md-inline">Detail</span></a></td>
-                        </tr>
-                    `;
-                            tbody.insertAdjacentHTML('afterbegin', newRow);
-                            // Update statistik
-                            const totalSpan = document.querySelector('.stat-total .stat-value');
-                            const pendingSpan = document.querySelector('.stat-pending .stat-value');
-                            if (totalSpan) totalSpan.innerText = parseInt(totalSpan.innerText) + 1;
-                            if (pendingSpan) pendingSpan.innerText = parseInt(pendingSpan.innerText) + 1;
-                        }
-                    };
-                    ws.onclose = function() {
-                        reconnectTimer = setTimeout(connectWebSocket, 3000);
-                    };
-                    ws.onerror = function(e) {
-                        console.error('WebSocket error', e);
-                    };
-                }
-
-                function escapeHtml(str) {
-                    if (!str) return '';
-                    return str.replace(/[&<>]/g, function(m) {
-                        if (m === '&') return '&amp;';
-                        if (m === '<') return '&lt;';
-                        if (m === '>') return '&gt;';
-                        return m;
-                    });
-                }
-
-                if (document.readyState === 'loading') {
-                    document.addEventListener('DOMContentLoaded', connectWebSocket);
-                } else {
-                    connectWebSocket();
-                }
-            })();
-        </script>
+        
     @endpush

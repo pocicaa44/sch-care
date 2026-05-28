@@ -2,6 +2,7 @@
 <html lang="id" data-bs-theme="light">
 
 <head>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'SCHCare Admin') — SCHCare</title>
@@ -17,6 +18,7 @@
     <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
     @vite(['resources/js/app.js'])
+    @livewireStyles()
     <style>
         /* ========================================
            CSS Variables — Light Theme
@@ -681,7 +683,16 @@
         /* ========================================
            Pagination
            ======================================== */
-        .pagination-wrapper {
+        .pagination {
+            gap: 5px;
+        }
+
+        .pagination .page-item .page-link {
+            border-radius: 10px !important;
+            
+        }
+
+        /* .pagination-wrapper {
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -733,7 +744,7 @@
             color: var(--text-muted);
             opacity: 0.7;
             cursor: not-allowed;
-        }
+        } */
 
         /* ========================================
            Flash Messages / Toast
@@ -1074,6 +1085,7 @@
         </header>
 
         <main class="main-content">
+            {{ $slot ?? '' }}
             @yield('content')
         </main>
     </div>
@@ -1108,6 +1120,12 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
+        window.addEventListener('pageShow', function(event) {
+            if (event.persisted) {
+                location.reload();
+            }
+        });
+
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('sidebarOverlay');
@@ -1162,6 +1180,7 @@
     </script>
 
     @stack('scripts')
+    @livewireScripts()
 </body>
 
 </html>

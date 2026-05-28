@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\NewReportEvent;
-use App\Events\ReportUpdatedEvent;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -18,12 +16,12 @@ class ReportController extends Controller
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function index()
-    {
-        $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('responses.user')->latest()->paginate(6);
+    // public function index()
+    // {
+    //     $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('responses.user')->latest()->paginate(6);
 
-        return view('siswa.dashboard', compact('reports'));
-    }
+    //     return view('siswa.dashboard', compact('reports'));
+    // }
 
     public function create()
     {
@@ -52,7 +50,6 @@ class ReportController extends Controller
         );
 
         $report->load('user');
-        event(new NewReportEvent($report));
 
         return redirect()->route('siswa.dashboard')->with('success', 'Laporan berhasil dibuat');
     }
@@ -84,7 +81,6 @@ class ReportController extends Controller
             $request->input('deleted_images', []) // ID gambar yang dihapus
         );
 
-        event(new ReportUpdatedEvent($report));
 
         return redirect()->route('siswa.show', $updatedReport->id)
             ->with('success', 'Laporan berhasil diperbarui')
