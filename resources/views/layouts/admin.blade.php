@@ -1033,9 +1033,8 @@
 
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <div class="brand-icon">S</div>
-            <div class="brand-text">SCH<span>Care</span></div>
+        <div class="d-flex justify-content-center">
+            <img src="{{ asset('images/schcare_logo.svg') }}" alt="logo" style="height: 100px; width: 150px">
         </div>
 
         <nav class="sidebar-nav">

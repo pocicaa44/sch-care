@@ -1,85 +1,78 @@
-    <div wire:poll.5s class="row g-3 mb-4">
+    <div wire:poll.5s class="row g-3">
         {{-- Total Laporan --}}
-        <div class="col-6 col-md-4 col-xl-2">
-            <div class="card-dark stat-card stat-total">
+        <div class="col-12  col-md-6 col-xl-4">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon icon-total">
-                            <i class="bi bi-file-earmark-bar-graph-fill"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">{{ $stats['total'] ?? 0 }}</div>
-                            <div class="stat-label">Total Laporan</div>
-                        </div>
+                    <div class="d-flex justify-content-between">
+                        <i class="bi bi-archive"></i>
+                        <span class="text-secondary text-uppercase">total</span>
+                    </div>
+                    <div class="text-end">
+                        <span class="fs-1">
+                            {{ $stats['total'] }}
+                        </span>
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- Pending --}}
-        <div class="col-6 col-md-4 col-xl-2">
-            <div class="card-dark stat-card stat-pending">
+        <div class="col-6 col-md-6 col-xl-2">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon icon-pending">
-                            <i class="bi bi-hourglass-split"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">{{ $stats['pending'] ?? 0 }}</div>
-                            <div class="stat-label">Pending</div>
-                        </div>
+                    <div class="d-flex justify-content-between">
+                        <i class="bi bi-clock"></i>
+                        <span class="text-secondary text-uppercase">pending</span>
                     </div>
+                    <span class="fs-1">
+                        {{ $stats['pending'] }}
+                    </span>
                 </div>
             </div>
         </div>
 
         {{-- Diproses --}}
         <div class="col-6 col-md-4 col-xl-2">
-            <div class="card-dark stat-card stat-diproses">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon icon-diproses">
-                            <i class="bi bi-arrow-repeat"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">{{ $stats['diproses'] ?? 0 }}</div>
-                            <div class="stat-label">Diproses</div>
-                        </div>
+                    <div class="d-flex justify-content-between">
+                        <i class="bi bi-gear"></i>
+                        <span class="text-secondary text-uppercase">diproses</span>
                     </div>
+                    <span class="fs-1">
+                        {{ $stats['diproses'] }}
+                    </span>
                 </div>
             </div>
         </div>
 
         {{-- Selesai --}}
         <div class="col-6 col-md-4 col-xl-2">
-            <div class="card-dark stat-card stat-selesai">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon icon-selesai">
-                            <i class="bi bi-check-circle-fill"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">{{ $stats['selesai'] ?? 0 }}</div>
-                            <div class="stat-label">Selesai</div>
-                        </div>
+                    <div class="d-flex justify-content-between">
+                        <i class="bi bi-check-circle"></i>
+                        <span class="text-secondary text-uppercase">selesai</span>
                     </div>
+                    <div class="div"></div>
+                    <span class="fs-1">
+                        {{ $stats['selesai'] }}
+                    </span>
                 </div>
             </div>
         </div>
 
         {{-- Ditolak --}}
         <div class="col-6 col-md-4 col-xl-2">
-            <div class="card-dark stat-card stat-ditolak">
+            <div class="card shadow-sm">
                 <div class="card-body">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon icon-ditolak">
-                            <i class="bi bi-x-circle-fill"></i>
-                        </div>
-                        <div>
-                            <div class="stat-value">{{ $stats['ditolak'] ?? 0 }}</div>
-                            <div class="stat-label">Ditolak</div>
-                        </div>
+                    <div class="d-flex justify-content-between">
+                        <i class="bi bi-x-circle"></i>
+                        <span class="text-secondary text-uppercase">ditolak</span>
                     </div>
+                    <span class="fs-1">
+                        {{ $stats['ditolak'] }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -102,7 +95,7 @@
                 <div class="filter-bar mb-3">
                     <div class="search-input-wrapper">
                         <i class="bi bi-search"></i>
-                        <input type="text" wire:model.live="search" class="form-control form-control-dark"
+                        <input type="text" wire:model.live.debounce.500ms="search" class="form-control form-control-dark"
                             placeholder="Cari judul laporan atau nama siswa...">
                     </div>
 

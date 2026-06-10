@@ -15,14 +15,7 @@ use Laravel\Reverb\Loggers\Log;
 class ReportController extends Controller
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-    // public function index()
-    // {
-    //     $reports = Report::where('user_id', Auth::id())->visibleToUser()->with('responses.user')->latest()->paginate(6);
-
-    //     return view('siswa.dashboard', compact('reports'));
-    // }
-
+    
     public function create()
     {
         return view('siswa.create');

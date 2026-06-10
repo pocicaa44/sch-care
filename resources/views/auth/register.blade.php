@@ -16,43 +16,11 @@
 
     <!-- ═══ LEFT PANEL ════════════════════════════════════ -->
     <div class="left-panel">
-        <div class="deco-square"></div>
-        <div class="deco-dot-grid">
-            <span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span>
-            <span></span><span></span><span></span><span></span>
-        </div>
 
         <div class="left-brand">
-            <div class="brand-mark"><i class="bi bi-file-earmark-text-fill"></i></div>
-            <h1>Buat<br>Akun Baru</h1>
+            <img src="{{ asset('images/schcare_logo.svg') }}" alt="logo" width="100%" height="250">
+            <h1>Buat Akun Baru</h1>
             <p>Daftar sekarang dan mulai laporkan masalah di sekolah dengan mudah.</p>
-        </div>
-
-        <div class="left-bottom">
-            <ul class="steps-list">
-                <li>
-                    <span class="step-num">1</span>
-                    <span class="step-text">
-                        <strong>Isi data diri</strong>
-                        Nama lengkap dan email sekolah kamu
-                    </span>
-                </li>
-                <li>
-                    <span class="step-num">2</span>
-                    <span class="step-text">
-                        <strong>Buat password</strong>
-                        Minimal 8 karakter untuk keamanan akun
-                    </span>
-                </li>
-                <li>
-                    <span class="step-num">3</span>
-                    <span class="step-text">
-                        <strong>Mulai melapor</strong>
-                        Langsung bisa kirim laporan ke admin sekolah
-                    </span>
-                </li>
-            </ul>
         </div>
     </div>
 

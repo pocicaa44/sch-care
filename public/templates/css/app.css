@@ -34,10 +34,10 @@ body {
 }
 
 .playfair {
-  font-family: "Playfair", serif;
-  font-optical-sizing: auto;
-  font-weight: 800;
-  font-style: normal;
+    font-family: "Playfair", serif;
+    font-optical-sizing: auto;
+    font-weight: 800;
+    font-style: normal;
 }
 
 /* ─── SIDEBAR (global) ───────────────────────────────── */
@@ -288,7 +288,9 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 1100;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition:
+        transform 0.15s,
+        box-shadow 0.15s;
     text-decoration: none;
 }
 .fab:hover {
@@ -317,7 +319,9 @@ body {
     align-items: center;
     justify-content: center;
     z-index: 1100;
-    transition: transform 0.15s, box-shadow 0.15s;
+    transition:
+        transform 0.15s,
+        box-shadow 0.15s;
     text-decoration: none;
 }
 .fab-right:hover {
@@ -363,15 +367,29 @@ body {
 .fade-up {
     animation: fadeUp 0.4s ease both;
 }
-.fade-up:nth-child(1) { animation-delay: 0.05s; }
-.fade-up:nth-child(2) { animation-delay: 0.1s; }
-.fade-up:nth-child(3) { animation-delay: 0.15s; }
-.fade-up:nth-child(4) { animation-delay: 0.2s; }
-.fade-up:nth-child(5) { animation-delay: 0.25s; }
-.fade-up:nth-child(6) { animation-delay: 0.3s; }
+.fade-up:nth-child(1) {
+    animation-delay: 0.05s;
+}
+.fade-up:nth-child(2) {
+    animation-delay: 0.1s;
+}
+.fade-up:nth-child(3) {
+    animation-delay: 0.15s;
+}
+.fade-up:nth-child(4) {
+    animation-delay: 0.2s;
+}
+.fade-up:nth-child(5) {
+    animation-delay: 0.25s;
+}
+.fade-up:nth-child(6) {
+    animation-delay: 0.3s;
+}
 
 @keyframes spin {
-    to { transform: rotate(360deg); }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* ─── DASHBOARD SPECIFIC (stat cards, filter, report cards) ─── */
@@ -383,7 +401,9 @@ body {
     display: flex;
     align-items: center;
     gap: 16px;
-    transition: box-shadow 0.2s, transform 0.2s;
+    transition:
+        box-shadow 0.2s,
+        transform 0.2s;
 }
 .stat-card:hover {
     box-shadow: 0 8px 28px rgba(0, 0, 0, 0.07);
@@ -479,7 +499,9 @@ body {
     border: 1px solid var(--gray-200);
     border-radius: 10px;
     overflow: hidden;
-    transition: box-shadow 0.22s, transform 0.22s;
+    transition:
+        box-shadow 0.22s,
+        transform 0.22s;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -604,7 +626,9 @@ body {
     font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
-    transition: background 0.15s, box-shadow 0.15s;
+    transition:
+        background 0.15s,
+        box-shadow 0.15s;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -657,7 +681,9 @@ body {
     font-size: 0.85rem;
     height: 38px;
     width: 220px;
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
     color: var(--gray-800);
     outline: none;
 }
@@ -686,7 +712,9 @@ body {
     align-items: center;
     gap: 7px;
     cursor: pointer;
-    transition: background 0.15s, box-shadow 0.15s;
+    transition:
+        background 0.15s,
+        box-shadow 0.15s;
     text-decoration: none;
 }
 .btn-tambah:hover {
@@ -824,7 +852,9 @@ body {
     font-size: 0.9rem;
     color: var(--gray-800);
     background: var(--white);
-    transition: border-color 0.15s, box-shadow 0.15s;
+    transition:
+        border-color 0.15s,
+        box-shadow 0.15s;
     outline: none;
 }
 .input-custom:focus {
@@ -889,7 +919,9 @@ textarea.input-custom {
     align-items: center;
     gap: 14px;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
+    transition:
+        border-color 0.15s,
+        background 0.15s;
     user-select: none;
 }
 .anon-toggle-wrap:hover {
@@ -972,7 +1004,9 @@ input:checked + .toggle-slider::before {
     transform: translateX(20px);
 }
 .anon-name-field {
-    transition: max-height 0.3s ease, opacity 0.3s ease;
+    transition:
+        max-height 0.3s ease,
+        opacity 0.3s ease;
     overflow: hidden;
     max-height: 160px;
     opacity: 1;
@@ -1069,7 +1103,9 @@ input:checked + .toggle-slider::before {
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s;
+    transition:
+        border-color 0.15s,
+        background 0.15s;
     position: relative;
     overflow: hidden;
 }
@@ -1315,7 +1351,9 @@ input:checked + .toggle-slider::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: transform 0.1s, box-shadow 0.1s;
+    transition:
+        transform 0.1s,
+        box-shadow 0.1s;
     box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
     flex-shrink: 0;
 }
@@ -1418,7 +1456,9 @@ input:checked + .toggle-slider::before {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    transition: background 0.15s, box-shadow 0.15s;
+    transition:
+        background 0.15s,
+        box-shadow 0.15s;
     box-shadow: 0 4px 14px rgba(220, 38, 38, 0.25);
 }
 .btn-submit:hover {
@@ -1573,7 +1613,9 @@ input:checked + .toggle-slider::before {
     cursor: pointer;
     position: relative;
     border: 2px solid var(--gray-200);
-    transition: transform 0.18s, box-shadow 0.18s;
+    transition:
+        transform 0.18s,
+        box-shadow 0.18s;
 }
 .photo-thumb:hover {
     transform: scale(1.03);
@@ -2100,7 +2142,10 @@ input:checked + .toggle-slider::before {
     border-radius: 12px;
     background: var(--white);
     cursor: pointer;
-    transition: border-color 0.15s, background 0.15s, box-shadow 0.15s;
+    transition:
+        border-color 0.15s,
+        background 0.15s,
+        box-shadow 0.15s;
     user-select: none;
 }
 .radio-card:hover {
@@ -2134,7 +2179,9 @@ input:checked + .toggle-slider::before {
     background: var(--red-vivid);
     opacity: 0;
     transform: scale(0.5);
-    transition: opacity 0.15s, transform 0.15s;
+    transition:
+        opacity 0.15s,
+        transform 0.15s;
 }
 .radio-option input[type="radio"]:checked + .radio-card .radio-dot::after {
     opacity: 1;
@@ -2261,7 +2308,6 @@ input:checked + .toggle-slider::before {
     margin-top: 2px;
 }
 
-
 /* Buttons for settings */
 .btn-save {
     padding: 9px 24px;
@@ -2275,7 +2321,9 @@ input:checked + .toggle-slider::before {
     display: inline-flex;
     align-items: center;
     gap: 7px;
-    transition: background 0.15s, box-shadow 0.15s;
+    transition:
+        background 0.15s,
+        box-shadow 0.15s;
     box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
 }
 .btn-save:hover {
@@ -2315,7 +2363,9 @@ input:checked + .toggle-slider::before {
     z-index: 9999;
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.25s, transform 0.25s;
+    transition:
+        opacity 0.25s,
+        transform 0.25s;
     pointer-events: none;
 }
 .toast-saved.show {
@@ -2363,4 +2413,30 @@ input:checked + .toggle-slider::before {
     .detail-section {
         padding: 18px;
     }
+}
+
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.filter-bar .search-input-wrapper {
+    position: relative;
+    flex: 1;
+    min-width: 200px;
+}
+
+.filter-bar .search-input-wrapper i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.filter-bar .search-input-wrapper .form-control {
+    padding-left: 36px;
 }

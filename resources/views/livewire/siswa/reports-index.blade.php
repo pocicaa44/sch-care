@@ -1,8 +1,29 @@
-<main wire:poll.5s class="page-body">
+<main wire:poll.5s.keep-alive wire:poll.on-error="resetPolling" class="page-body">
 
     <div class="row g-3 mb-3">
-        <div class="col-12 col-xl-4">
-            <input type="text" class="form-control">
+        <div class="col-12 col-xl-6">
+            <div class="filter-bar mb-3">
+                    <div class="search-input-wrapper">
+                        <i class="bi bi-search"></i>
+                        <input type="text" wire:model.live.debounce.500ms="search" class="form-control"
+                            placeholder="Cari judul laporan">
+                    </div>
+
+                    <select wire:model.live="statusFilter" class="form-select form-select-dark auto-submit"
+                        style="width:auto; min-width:160px;">
+                        <option value="">Semua Status</option>
+                        <option value="pending">Pending ({{ $stats['pending'] }})</option>
+                        <option value="diproses">Diproses ({{ $stats['diproses'] }})</option>
+                        <option value="selesai">Selesai ({{ $stats['selesai'] }})</option>
+                        <option value="ditolak">Ditolak ({{ $stats['ditolak'] }})</option>
+                    </select>
+
+                    @if ($search || $statusFilter)
+                        <button wire:click="resetFilters" class="btn-action btn-detail" wire:navigate style="white-space:nowrap;">
+                            <i class="bi bi-x-lg"></i> Reset
+                        </button>
+                    @endif
+                </div>
         </div>
     </div>
 
@@ -74,7 +95,14 @@
                 </div>
             </div>
         @empty
-            <p class="text-center text-secondary">Anda belum memiliki laporan</p>
+            @if($search || $statusFilter)
+            <p class="mt-2 text-secondary fst-italic text-center">
+                <i class="bi bi-search me-2"></i>
+                Laporan tidak ditemukan
+            </p>
+            @else
+                <p class="mt-2 text-secondary fst-italic text-center"><i class="bi bi-inbox me-2"></i>Anda belum memiliki laporan.</p>
+            @endif
         @endforelse
 
         <div class="">

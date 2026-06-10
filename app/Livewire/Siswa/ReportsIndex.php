@@ -27,6 +27,17 @@ class ReportsIndex extends Component
         $this->resetPage();
     }
 
+    public function resetFilters()
+    {
+        $this->search = '';
+        $this->statusFilter = '';
+        $this->resetPage();
+    }
+
+    public function resetPolling() {
+
+    }
+
     public function render()
     {
         $reports = Report::where('user_id', Auth::id())
@@ -50,6 +61,18 @@ class ReportsIndex extends Component
 
         return view('livewire.siswa.reports-index', [
             'reports' => $reports,
+            'stats' => $this->getStats(),
         ]);
+    }
+
+    public function getStats() {
+        $globalQuery = Report::query()->visibleToUser();
+        return [
+            'total' => $globalQuery->count(),
+            'pending' => (clone $globalQuery)->where('status', 'pending')->count(),
+            'diproses' => (clone $globalQuery)->where('status', 'diproses')->count(),
+            'selesai' => (clone $globalQuery)->where('status', 'selesai')->count(),
+            'ditolak' => (clone $globalQuery)->where('status', 'ditolak')->count(),
+        ];
     }
 }

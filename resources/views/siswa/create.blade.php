@@ -56,7 +56,6 @@
                             <div class="mb-4">
                                 <label class="form-label-custom">
                                     Deskripsi Laporan <span class="required">*</span>
-                                    <span class="hint">— jelaskan secara rinci</span>
                                 </label>
                                 <textarea id="inputDesc" name="description" class="input-custom" rows="5"
                                     placeholder="Deskripsikan apa yang anda temukan" maxlength="1000" oninput="updateChar(this,'charDesc')" required

@@ -31,7 +31,7 @@ body {
 .left-panel {
     width: 420px;
     flex-shrink: 0;
-    background: var(--red-vivid);
+    background: #f3f3f3;
     position: relative;
     overflow: hidden;
     display: flex;
@@ -92,48 +92,8 @@ body {
     align-items: center;
     justify-content: center;
     font-size: 20px;
-    color: #fff;
     margin-bottom: 20px;
     backdrop-filter: blur(4px);
-}
-.left-brand h1 {
-    font-family: "Playfair Display", serif;
-    font-size: 2rem;
-    font-weight: 700;
-    color: #fff;
-    line-height: 1.15;
-    margin-bottom: 12px;
-}
-.left-brand p {
-    font-size: 0.88rem;
-    color: rgba(255, 255, 255, 0.7);
-    line-height: 1.65;
-    max-width: 280px;
-}
-
-.left-bottom {
-    position: relative;
-    z-index: 1;
-}
-.feature-list {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-.feature-list li {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.82rem;
-    color: rgba(255, 255, 255, 0.8);
-}
-.feature-list li .feat-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.5);
-    flex-shrink: 0;
 }
 
 /* ─── RIGHT PANEL ─────────────────────────────────── */
@@ -162,20 +122,17 @@ body {
     font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--red-vivid);
     margin-bottom: 8px;
 }
 .form-header h2 {
     font-family: "Playfair Display", serif;
     font-size: 1.75rem;
     font-weight: 700;
-    color: var(--gray-800);
     line-height: 1.2;
     margin-bottom: 8px;
 }
 .form-header p {
     font-size: 0.84rem;
-    color: var(--gray-400);
     line-height: 1.55;
 }
 

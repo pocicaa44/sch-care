@@ -20,19 +20,11 @@
         <div class="deco-line"></div>
 
         <div class="left-brand">
-            <div class="brand-mark"><i class="bi bi-file-earmark-text-fill"></i></div>
-            <h1>SCH<br>Care</h1>
-            <p>Platform pelaporan sekolah yang aman, mudah, dan terpercaya untuk siswa dan admin.</p>
+            <img src="{{ asset('images/schcare_logo.svg')}}" alt="logo" width="100%" height="250">
+            <p class="text-secondary text-uppercase">sistem manajemen laporan sekolah</p>
         </div>
 
-        <div class="left-bottom">
-            <ul class="feature-list">
-                <li><span class="feat-dot"></span> Laporan langsung sampai ke admin</li>
-                <li><span class="feat-dot"></span> Pilihan kirim secara anonim</li>
-                <li><span class="feat-dot"></span> Pantau status laporan kamu</li>
-                <li><span class="feat-dot"></span> Bukti foto bisa dilampirkan</li>
-            </ul>
-        </div>
+        
     </div>
 
     <!-- ═══ RIGHT PANEL — LOGIN ════════════════════════════ -->
@@ -113,7 +105,7 @@
         </div>
 
         <div class="form-footer-note">
-            &copy; 2026 LaporKu · Sistem Pelaporan Sekolah
+            &copy; 2026 SCH Care · Sistem Pelaporan Sekolah
         </div>
 
     </div>

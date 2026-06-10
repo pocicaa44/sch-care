@@ -12,7 +12,9 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Roboto:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair:ital,opsz,wght@0,5..1200,300..900;1,5..1200,300..900&family=Roboto:ital,wght@0,700;1,700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('templates/css/app.css') }}">
     @stack('styles')
     @livewireStyles()
@@ -22,8 +24,9 @@
     {{-- sidebar --}}
     <aside class="sidebar" id="desktopSidebar">
         <div class="sidebar-brand">
-            <div class="brand-icon"><i class="bi bi-file-earmark-text-fill"></i></div>
-            <h1>SCH CARE</h1>
+            <div class="d-flex justify-content-center">
+                <img src="{{ asset('images/schcare_logo.svg') }}" alt="logo" height="100" width="150">
+            </div>
             <span>Sistem Manajemen Laporan</span>
         </div>
 
@@ -204,7 +207,7 @@
             </div>
         </header>
 
-        {{ $slot ?? '' }} 
+        {{ $slot ?? '' }}
         @yield('content')
     </div>
 
@@ -290,6 +293,14 @@
                     });
             }
         });
+    </script>
+    <script>
+        function resetPolling() {
+            Livewire.dispatch('poll:reset');
+            setTimeout(() => {
+                Livewire.resume();
+            }, 5000);
+        }
     </script>
     @livewireScripts()
 </body>
