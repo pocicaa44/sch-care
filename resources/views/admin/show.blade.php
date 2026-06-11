@@ -2,6 +2,303 @@
 
 @section('pageTitle', 'Detail Laporan' . $report->id)
 
+@push('styles')
+<style>
+    /* ============================================
+       LIGHTBOX — Fullscreen Overlay
+       ============================================ */
+    .lb-overlay .modal-dialog {
+        max-width: 100vw;
+        margin: 0;
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+    }
+
+    .lb-overlay .modal-content {
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        width: 100%;
+        height: 100vh;
+        height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .lb-overlay .modal-backdrop {
+        background: rgba(4, 4, 8, 0.92) !important;
+        backdrop-filter: blur(28px) saturate(1.3);
+        -webkit-backdrop-filter: blur(28px) saturate(1.3);
+    }
+
+    /* Gambar utama */
+    .lb-img-wrap {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        max-width: 86vw;
+        max-height: 76vh;
+        z-index: 1;
+    }
+
+    .lb-img-wrap img {
+        max-width: 86vw;
+        max-height: 76vh;
+        object-fit: contain;
+        border-radius: 10px;
+        box-shadow: 0 24px 64px rgba(0,0,0,0.55);
+        opacity: 0;
+        transform: scale(0.93);
+        transition: opacity 0.35s ease, transform 0.4s cubic-bezier(.22,.68,0,1.08);
+        user-select: none;
+        -webkit-user-drag: none;
+    }
+
+    .lb-img-wrap img.lb-visible {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Loading spinner */
+    .lb-loader {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    .lb-loader .spinner-border {
+        width: 32px;
+        height: 32px;
+        border-width: 3px;
+        color: var(--accent);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .lb-loader .spinner-border.lb-loading {
+        opacity: 1;
+    }
+
+    /* Tombol navigasi */
+    .lb-nav-btn {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.06);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: #fff;
+        font-size: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 5;
+        transition: all 0.25s ease;
+        outline: none;
+    }
+
+    .lb-nav-btn:hover {
+        background: var(--accent);
+        border-color: var(--accent);
+        box-shadow: 0 0 24px rgba(232, 87, 42, 0.4);
+        transform: translateY(-50%) scale(1.08);
+    }
+
+    .lb-nav-btn:active {
+        transform: translateY(-50%) scale(0.94);
+    }
+
+    .lb-nav-btn.lb-disabled {
+        opacity: 0.2;
+        pointer-events: none;
+        cursor: default;
+    }
+
+    .lb-prev { left: max(14px, 2.5vw); }
+    .lb-next { right: max(14px, 2.5vw); }
+
+    /* Tombol tutup */
+    .lb-close-btn {
+        position: absolute;
+        top: 18px;
+        right: 20px;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        border: 1px solid rgba(255,255,255,0.1);
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: #fff;
+        font-size: 1.1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 5;
+        transition: all 0.25s ease;
+        outline: none;
+    }
+
+    .lb-close-btn:hover {
+        background: #c0392b;
+        border-color: #c0392b;
+        transform: rotate(90deg) scale(1.08);
+    }
+
+    /* Info bar bawah */
+    .lb-info-bar {
+        position: absolute;
+        bottom: 22px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        background: rgba(255,255,255,0.05);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(255,255,255,0.07);
+        border-radius: 100px;
+        padding: 9px 24px;
+        z-index: 5;
+        white-space: nowrap;
+    }
+
+    .lb-counter {
+        font-size: 13px;
+        color: var(--text-muted, #888);
+        font-weight: 500;
+    }
+
+    .lb-counter .lb-cur {
+        color: var(--accent, #e8572a);
+        font-weight: 700;
+    }
+
+    .lb-info-divider {
+        width: 1px;
+        height: 16px;
+        background: rgba(255,255,255,0.1);
+    }
+
+    .lb-info-label {
+        font-size: 13px;
+        color: rgba(255,255,255,0.75);
+        font-weight: 500;
+    }
+
+    /* Thumbnail strip */
+    .lb-thumbs {
+        position: absolute;
+        bottom: 72px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 6px;
+        padding: 7px 12px;
+        background: rgba(0,0,0,0.4);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.05);
+        max-width: 75vw;
+        overflow-x: auto;
+        z-index: 5;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+    }
+
+    .lb-thumbs::-webkit-scrollbar { display: none; }
+
+    .lb-thumb-item {
+        width: 48px;
+        height: 36px;
+        border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+        border: 2px solid transparent;
+        opacity: 0.4;
+        transition: all 0.25s ease;
+        flex-shrink: 0;
+    }
+
+    .lb-thumb-item:hover { opacity: 0.75; }
+
+    .lb-thumb-item.lb-active {
+        border-color: var(--accent, #e8572a);
+        opacity: 1;
+        box-shadow: 0 0 10px rgba(232, 87, 42, 0.35);
+    }
+
+    .lb-thumb-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        pointer-events: none;
+    }
+
+    /* Hint navigasi keyboard (muncul singkat) */
+    .lb-keyboard-hint {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 12px;
+        color: rgba(255,255,255,0.3);
+        z-index: 5;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+        pointer-events: none;
+    }
+
+    .lb-keyboard-hint.lb-show-hint {
+        opacity: 1;
+    }
+
+    /* Responsif */
+    @media (max-width: 576px) {
+        .lb-nav-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1rem;
+        }
+        .lb-prev { left: 8px; }
+        .lb-next { right: 8px; }
+        .lb-img-wrap { max-width: 94vw; max-height: 68vh; }
+        .lb-img-wrap img { max-width: 94vw; max-height: 68vh; }
+        .lb-thumbs { max-width: 88vw; bottom: 66px; }
+        .lb-thumb-item { width: 40px; height: 30px; }
+        .lb-info-bar { padding: 7px 16px; gap: 10px; bottom: 16px; }
+        .lb-keyboard-hint { display: none; }
+    }
+
+    /* Reduced motion */
+    @media (prefers-reduced-motion: reduce) {
+        .lb-img-wrap img { transition-duration: 0.01ms !important; }
+        .lb-nav-btn, .lb-close-btn, .lb-thumb-item { transition-duration: 0.01ms !important; }
+    }
+</style>
+@endpush
+
 @section('content')
     {{-- Tombol Kembali --}}
     <a href="{{ route('admin.dashboard') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none mb-4"
@@ -14,8 +311,8 @@
     <div class="row g-3">
 
         <!-- ========================================
-                                                 Kolom Kiri: Detail Laporan (8/12)
-                                                 ======================================== -->
+                                             Kolom Kiri: Detail Laporan (8/12)
+                                             ======================================== -->
         <div class="col-lg-8">
 
             {{-- Card 1: Judul & Status --}}
@@ -133,9 +430,9 @@
                     </h6>
 
                     @if ($report->images && $report->images->count() > 0)
-                        {{-- Menyimpan semua URL gambar untuk lightbox --}}
                         @php
                             $imageUrls = $report->images->map(fn($img) => asset('storage/' . $img->path))->toArray();
+                            $imageThumbs = $report->images->map(fn($img) => asset('storage/' . $img->path))->toArray();
                         @endphp
 
                         <div class="row g-3">
@@ -148,7 +445,6 @@
                                         <img src="{{ asset('storage/' . $img->path) }}"
                                             alt="Foto bukti {{ $index + 1 }}"
                                             style="width:100%; height:100%; object-fit:cover;" loading="lazy">
-                                        {{-- Overlay ikon zoom --}}
                                         <div style="position:absolute; inset:0; background:rgba(0,0,0,0.35); display:flex; align-items:center; justify-content:center; opacity:0; transition: opacity 0.2s ease;"
                                             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0'">
                                             <div
@@ -158,7 +454,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    {{-- Label nomor --}}
                                     <div
                                         style="font-size:11px; color:var(--text-muted); margin-top:6px; text-align:center;">
                                         Foto {{ $index + 1 }}
@@ -167,6 +462,7 @@
                             @endforeach
                         </div>
                     @else
+                        @php $imageUrls = []; $imageThumbs = []; @endphp
                         <div class="text-center py-4" style="color:var(--text-muted); font-size:13.5px;">
                             <i class="bi bi-image d-block mb-2" style="font-size:32px; opacity:0.3;"></i>
                             Tidak ada bukti foto.
@@ -175,6 +471,7 @@
                 </div>
             </div>
 
+            {{-- Card: Form Tanggapan --}}
             <div class="card-dark mb-3" style="cursor: default;" onmouseover="this.style.transform='none'">
                 <div class="card-body p-4">
                     <form method="POST" action="{{ route('admin.response', $report->id) }}" enctype="multipart/form-data"
@@ -190,7 +487,6 @@
                         <input type="file" name="attachments[]" id="fileInput" multiple accept="image/*"
                             class="d-none">
 
-                        {{-- Container preview dan jumlah file --}}
                         <div id="attachmentPreviews" class="mt-3 d-flex flex-column gap-2"></div>
                         <div id="attachmentCount" class="mt-2 small text-muted"></div>
 
@@ -261,11 +557,8 @@
             </div>
         </div>
 
-        <!-- ========================================
-                                                 Kolom Kanan: Sidebar Info (4/12)
-                                                 ======================================== -->
-        <div class="col-lg-4">
 
+        <div class="col-lg-4">
             {{-- Info Siswa --}}
             <div class="card-dark mb-3" style="cursor:default;" onmouseover="this.style.transform='none'"
                 onmouseout="this.style.transform='none'">
@@ -509,41 +802,47 @@
         </div>
     </div>
 
-    <!-- ========================================
-                                             Modal: Lightbox Foto Bukti
-                                             ======================================== -->
-    <div class="modal fade modal-dark" id="lightboxModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg" style="max-width:90vw;">
-            <div class="modal-content" style="background:transparent; border:none; box-shadow:none;">
-                <div class="modal-body" style="padding:0; text-align:center; position:relative;">
-                    {{-- Tombol tutup --}}
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"
-                        style="position:absolute; top:-40px; right:0; opacity:0.7; z-index:2;"></button>
+    <div class="modal fade lb-overlay" id="lightboxModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="true" data-bs-keyboard="false">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                {{-- Tutup --}}
+                <button type="button" class="lb-close-btn" id="lbCloseBtn" aria-label="Tutup">
+                    <i class="bi bi-x-lg"></i>
+                </button>
 
-                    {{-- Navigasi kiri --}}
-                    <button type="button" id="lightboxPrev" onclick="navigateLightbox(-1)"
-                        style="position:absolute; left:-50px; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:var(--bg-card); border:1px solid var(--border-color); color:var(--text-primary); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.1); z-index:2; transition: background 0.2s ease;"
-                        onmouseover="this.style.background='var(--bg-input)'"
-                        onmouseout="this.style.background='var(--bg-card)'">
-                        <i class="bi bi-chevron-left" style="font-size:18px;"></i>
-                    </button>
+                {{-- Hint keyboard --}}
+                <div class="lb-keyboard-hint" id="lbHint">
+                    <i class="bi bi-keyboard me-1"></i> Gunakan panah kiri/kanan untuk navigasi
+                </div>
 
-                    {{-- Gambar --}}
-                    <img id="lightboxImage" src="" alt="Preview"
-                        style="max-width:100%; max-height:80vh; border-radius:12px; object-fit:contain; transition: opacity 0.2s ease;">
+                {{-- Navigasi kiri --}}
+                <button type="button" class="lb-nav-btn lb-prev" id="lbPrevBtn" aria-label="Gambar sebelumnya">
+                    <i class="bi bi-chevron-left"></i>
+                </button>
 
-                    {{-- Navigasi kanan --}}
-                    <button type="button" id="lightboxNext" onclick="navigateLightbox(1)"
-                        style="position:absolute; right:-50px; top:50%; transform:translateY(-50%); width:40px; height:40px; border-radius:50%; background:var(--bg-card); border:1px solid var(--border-color); color:var(--text-primary); display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,0.1); z-index:2; transition: background 0.2s ease;"
-                        onmouseover="this.style.background='var(--bg-input)'"
-                        onmouseout="this.style.background='var(--bg-card)'">
-                        <i class="bi bi-chevron-right" style="font-size:18px;"></i>
-                    </button>
-
-                    {{-- Counter --}}
-                    <div id="lightboxCounter"
-                        style="margin-top:12px; font-size:13px; color:var(--text-muted); font-weight:500;">
+                {{-- Gambar + Loader --}}
+                <div class="lb-img-wrap">
+                    <div class="lb-loader">
+                        <div class="spinner-border" id="lbSpinner" role="status"></div>
                     </div>
+                    <img id="lbImage" src="" alt="Preview bukti foto">
+                </div>
+
+                {{-- Navigasi kanan --}}
+                <button type="button" class="lb-nav-btn lb-next" id="lbNextBtn" aria-label="Gambar selanjutnya">
+                    <i class="bi bi-chevron-right"></i>
+                </button>
+
+                {{-- Thumbnail strip --}}
+                <div class="lb-thumbs" id="lbThumbs"></div>
+
+                {{-- Info bar --}}
+                <div class="lb-info-bar">
+                    <div class="lb-counter">
+                        <span class="lb-cur" id="lbCur">1</span> / <span id="lbTotal">1</span>
+                    </div>
+                    <div class="lb-info-divider"></div>
+                    <div class="lb-info-label" id="lbLabel">Foto Bukti</div>
                 </div>
             </div>
         </div>
@@ -553,150 +852,307 @@
 @push('scripts')
     <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // === Elemen ===
+        // ========================================
+        // Upload Attachments
+        // ========================================
         const form = document.getElementById('responseForm');
         const fileInput = document.getElementById('fileInput');
         const previewContainer = document.getElementById('attachmentPreviews');
         const countDisplay = document.getElementById('attachmentCount');
         const uploadButton = document.getElementById('uploadTriggerBtn');
 
-        if (!form || !fileInput || !uploadButton) return;
+        if (form && fileInput && uploadButton) {
+            let selectedFiles = [];
 
-        let selectedFiles = []; // Array penampung File object
+            function renderPreviews() {
+                previewContainer.innerHTML = '';
+                if (selectedFiles.length === 0) {
+                    countDisplay.textContent = '';
+                    return;
+                }
+                countDisplay.textContent = selectedFiles.length + ' file dipilih';
 
-        // === Render preview nama file & tombol hapus ===
-        function renderPreviews() {
-            previewContainer.innerHTML = '';
-            if (selectedFiles.length === 0) {
-                countDisplay.textContent = '';
+                selectedFiles.forEach(function(file, index) {
+                    const item = document.createElement('div');
+                    item.className = 'd-flex align-items-center gap-2 p-2 rounded border';
+                    item.style.backgroundColor = 'var(--bg-input)';
+                    item.style.borderColor = 'var(--border-color)';
+
+                    const nameSpan = document.createElement('span');
+                    nameSpan.textContent = file.name;
+                    nameSpan.style.flex = '1';
+                    nameSpan.style.overflow = 'hidden';
+                    nameSpan.style.textOverflow = 'ellipsis';
+                    nameSpan.style.whiteSpace = 'nowrap';
+                    nameSpan.style.color = 'var(--text-primary)';
+
+                    const removeBtn = document.createElement('button');
+                    removeBtn.type = 'button';
+                    removeBtn.className = 'btn btn-sm btn-outline-danger border-0';
+                    removeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
+                    removeBtn.addEventListener('click', function() {
+                        selectedFiles.splice(index, 1);
+                        renderPreviews();
+                    });
+
+                    item.appendChild(nameSpan);
+                    item.appendChild(removeBtn);
+                    previewContainer.appendChild(item);
+                });
+            }
+
+            uploadButton.addEventListener('click', function(e) {
+                e.preventDefault();
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', function(e) {
+                var newFiles = Array.from(e.target.files);
+                newFiles.forEach(function(file) {
+                    var isDuplicate = selectedFiles.some(function(f) {
+                        return f.name === file.name && f.size === file.size && f.lastModified === file.lastModified;
+                    });
+                    if (!isDuplicate) selectedFiles.push(file);
+                });
+                renderPreviews();
+                fileInput.value = '';
+            });
+
+            form.addEventListener('submit', function() {
+                if (selectedFiles.length === 0) return;
+                var dt = new DataTransfer();
+                selectedFiles.forEach(function(file) { dt.items.add(file); });
+                fileInput.files = dt.files;
+            });
+
+            window.addEventListener('pageshow', function() {
+                selectedFiles = [];
+                renderPreviews();
+            });
+        }
+    });
+
+    // ========================================
+    // Lightbox — Navigasi Multi Gambar
+    // ========================================
+    (function() {
+        // Data gambar dari Blade
+        var lbImages = @json($imageUrls ?? []);
+        var lbThumbs = @json($imageThumbs ?? []);
+        var lbIndex = 0;
+        var lbInstance = null;
+        var lbTransitioning = false;
+        var hintTimer = null;
+
+        // Elemen
+        var modalEl = document.getElementById('lightboxModal');
+        var imgEl = document.getElementById('lbImage');
+        var spinnerEl = document.getElementById('lbSpinner');
+        var curEl = document.getElementById('lbCur');
+        var totalEl = document.getElementById('lbTotal');
+        var labelEl = document.getElementById('lbLabel');
+        var thumbsEl = document.getElementById('lbThumbs');
+        var prevBtn = document.getElementById('lbPrevBtn');
+        var nextBtn = document.getElementById('lbNextBtn');
+        var closeBtn = document.getElementById('lbCloseBtn');
+        var hintEl = document.getElementById('lbHint');
+
+        if (!modalEl) return;
+
+        // Inisialisasi modal Bootstrap
+        lbInstance = new bootstrap.Modal(modalEl);
+
+        // === Fungsi utama ===
+
+        // Buka lightbox dari gallery
+        window.openLightbox = function(index) {
+            if (lbImages.length === 0) return;
+            lbIndex = index;
+            lbInstance.show();
+            buildThumbs();
+            setImage(false);
+            showHint();
+        };
+
+        // Set gambar (animate = true untuk transisi halus)
+        function setImage(animate) {
+            if (lbTransitioning && animate) return;
+            var item = lbImages[lbIndex];
+
+            if (animate) {
+                lbTransitioning = true;
+                imgEl.classList.remove('lb-visible');
+                setTimeout(function() {
+                    loadAndShow(item, false);
+                }, 200);
+            } else {
+                loadAndShow(item, true);
+            }
+
+            updateInfo();
+            updateNavState();
+            updateActiveThumb();
+        }
+
+        // Load gambar dengan spinner
+        function loadAndShow(src, immediate) {
+            spinnerEl.classList.add('lb-loading');
+            imgEl.src = src;
+
+            // Jika gambar sudah di-cache, langsung tampilkan
+            if (imgEl.complete && imgEl.naturalWidth > 0) {
+                spinnerEl.classList.remove('lb-loading');
+                if (immediate) {
+                    // Sedikit delay agar transisi awal terlihat
+                    requestAnimationFrame(function() {
+                        void imgEl.offsetWidth;
+                        imgEl.classList.add('lb-visible');
+                    });
+                } else {
+                    void imgEl.offsetWidth;
+                    imgEl.classList.add('lb-visible');
+                    lbTransitioning = false;
+                }
+            } else {
+                imgEl.onload = function() {
+                    spinnerEl.classList.remove('lb-loading');
+                    void imgEl.offsetWidth;
+                    imgEl.classList.add('lb-visible');
+                    lbTransitioning = false;
+                };
+                imgEl.onerror = function() {
+                    spinnerEl.classList.remove('lb-loading');
+                    lbTransitioning = false;
+                };
+            }
+        }
+
+        // Update info bar
+        function updateInfo() {
+            curEl.textContent = lbIndex + 1;
+            totalEl.textContent = lbImages.length;
+            labelEl.textContent = 'Foto ' + (lbIndex + 1);
+        }
+
+        // Update state tombol navigasi (disable di ujung)
+        function updateNavState() {
+            if (lbImages.length <= 1) {
+                prevBtn.classList.add('lb-disabled');
+                nextBtn.classList.add('lb-disabled');
+            } else {
+                prevBtn.classList.toggle('lb-disabled', lbIndex === 0);
+                nextBtn.classList.toggle('lb-disabled', lbIndex === lbImages.length - 1);
+            }
+        }
+
+        // Navigasi
+        function goNext() {
+            if (lbIndex < lbImages.length - 1) {
+                lbIndex++;
+                setImage(true);
+            }
+        }
+
+        function goPrev() {
+            if (lbIndex > 0) {
+                lbIndex--;
+                setImage(true);
+            }
+        }
+
+        // === Thumbnail strip ===
+        function buildThumbs() {
+            thumbsEl.innerHTML = '';
+            if (lbThumbs.length <= 1) {
+                thumbsEl.style.display = 'none';
                 return;
             }
-            countDisplay.textContent = `${selectedFiles.length} file dipilih`;
+            thumbsEl.style.display = 'flex';
 
-            selectedFiles.forEach((file, index) => {
-                const item = document.createElement('div');
-                item.className = 'd-flex align-items-center gap-2 p-2 rounded border';
-                item.style.backgroundColor = 'var(--bg-input)';
-                item.style.borderColor = 'var(--border-color)';
-
-                const nameSpan = document.createElement('span');
-                nameSpan.textContent = file.name;
-                nameSpan.style.flex = '1';
-                nameSpan.style.overflow = 'hidden';
-                nameSpan.style.textOverflow = 'ellipsis';
-                nameSpan.style.whiteSpace = 'nowrap';
-                nameSpan.style.color = 'var(--text-primary)';
-
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.className = 'btn btn-sm btn-outline-danger border-0';
-                removeBtn.innerHTML = '<i class="bi bi-x-lg"></i>';
-                removeBtn.addEventListener('click', () => {
-                    selectedFiles.splice(index, 1);
-                    renderPreviews();
+            lbThumbs.forEach(function(src, i) {
+                var thumb = document.createElement('div');
+                thumb.className = 'lb-thumb-item' + (i === lbIndex ? ' lb-active' : '');
+                thumb.innerHTML = '<img src="' + src + '" alt="Thumbnail ' + (i + 1) + '" loading="lazy">';
+                thumb.addEventListener('click', function() {
+                    if (lbTransitioning) return;
+                    lbIndex = i;
+                    setImage(true);
                 });
-
-                item.appendChild(nameSpan);
-                item.appendChild(removeBtn);
-                previewContainer.appendChild(item);
+                thumbsEl.appendChild(thumb);
             });
         }
 
-        // === Buka dialog file ===
-        uploadButton.addEventListener('click', (e) => {
-            e.preventDefault();
-            fileInput.click();
-        });
-
-        // === Tangani file yang dipilih ===
-        fileInput.addEventListener('change', (e) => {
-            const newFiles = Array.from(e.target.files);
-            newFiles.forEach(file => {
-                // Cegah duplikat (opsional)
-                const isDuplicate = selectedFiles.some(f =>
-                    f.name === file.name &&
-                    f.size === file.size &&
-                    f.lastModified === file.lastModified
-                );
-                if (!isDuplicate) {
-                    selectedFiles.push(file);
-                }
+        function updateActiveThumb() {
+            var items = thumbsEl.querySelectorAll('.lb-thumb-item');
+            items.forEach(function(t, i) {
+                t.classList.toggle('lb-active', i === lbIndex);
             });
-            renderPreviews();
-            fileInput.value = ''; // Reset agar bisa memilih file yang sama lagi
+            // Scroll thumbnail aktif ke tengah
+            var active = thumbsEl.querySelector('.lb-thumb-item.lb-active');
+            if (active) {
+                active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            }
+        }
+
+        // === Keyboard hint ===
+        function showHint() {
+            if (!hintEl || lbImages.length <= 1) return;
+            clearTimeout(hintTimer);
+            hintEl.classList.add('lb-show-hint');
+            hintTimer = setTimeout(function() {
+                hintEl.classList.remove('lb-show-hint');
+            }, 3000);
+        }
+
+        // === Event listeners ===
+
+        // Tombol navigasi
+        prevBtn.addEventListener('click', goPrev);
+        nextBtn.addEventListener('click', goNext);
+        closeBtn.addEventListener('click', function() { lbInstance.hide(); });
+
+        // Keyboard
+        document.addEventListener('keydown', function(e) {
+            if (!lbInstance._isShown) return;
+            if (e.key === 'ArrowRight' || e.key === 'd') { e.preventDefault(); goNext(); }
+            else if (e.key === 'ArrowLeft' || e.key === 'a') { e.preventDefault(); goPrev(); }
+            else if (e.key === 'Escape') { e.preventDefault(); lbInstance.hide(); }
         });
 
-        // === Sebelum submit, isi input file dengan DataTransfer ===
-        form.addEventListener('submit', function(e) {
-            if (selectedFiles.length === 0) return; // Tidak ada file, lanjutkan submit biasa
+        // Touch / swipe
+        var touchStartX = 0;
+        var touchStartY = 0;
+        var isSwiping = false;
 
-            const dt = new DataTransfer();
-            selectedFiles.forEach(file => dt.items.add(file));
-            fileInput.files = dt.files;
+        modalEl.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            touchStartY = e.changedTouches[0].screenY;
+            isSwiping = true;
+        }, { passive: true });
 
-            // Lanjutkan submit native (tidak perlu preventDefault)
+        modalEl.addEventListener('touchend', function(e) {
+            if (!isSwiping) return;
+            isSwiping = false;
+            var touchEndX = e.changedTouches[0].screenX;
+            var touchEndY = e.changedTouches[0].screenY;
+            var diffX = touchStartX - touchEndX;
+            var diffY = touchStartY - touchEndY;
+
+            // Hanya proses swipe horizontal jika lebih dominan dari vertikal
+            if (Math.abs(diffX) > 50 && Math.abs(diffX) > Math.abs(diffY)) {
+                if (diffX > 0) goNext();
+                else goPrev();
+            }
+        }, { passive: true });
+
+        // Reset saat modal ditutup
+        modalEl.addEventListener('hidden.bs.modal', function() {
+            imgEl.classList.remove('lb-visible');
+            spinnerEl.classList.remove('lb-loading');
+            lbTransitioning = false;
+            if (hintEl) hintEl.classList.remove('lb-show-hint');
         });
 
-        // === Opsional: Bersihkan state saat halaman dimuat ulang (setelah submit) ===
-        window.addEventListener('pageshow', function() {
-            selectedFiles = [];
-            renderPreviews();
-        });
-    });
-
-    // ========================================
-    // Lightbox — Navigasi Multi Gambar (tetap)
-    // ========================================
-    const lightboxImages = @json($imageUrls ?? []);
-    let lightboxIndex = 0;
-    let lightboxInstance = null;
-
-    const lightboxModalEl = document.getElementById('lightboxModal');
-    if (lightboxModalEl) {
-        lightboxInstance = new bootstrap.Modal(lightboxModalEl);
-    }
-
-    function openLightbox(index) {
-        if (lightboxImages.length === 0) return;
-        lightboxIndex = index;
-        updateLightboxImage();
-        updateLightboxNav();
-        if (lightboxInstance) lightboxInstance.show();
-    }
-
-    function navigateLightbox(direction) {
-        lightboxIndex += direction;
-        if (lightboxIndex < 0) lightboxIndex = lightboxImages.length - 1;
-        if (lightboxIndex >= lightboxImages.length) lightboxIndex = 0;
-
-        const img = document.getElementById('lightboxImage');
-        img.style.opacity = '0';
-        setTimeout(() => {
-            updateLightboxImage();
-            img.style.opacity = '1';
-        }, 150);
-    }
-
-    function updateLightboxImage() {
-        const img = document.getElementById('lightboxImage');
-        const counter = document.getElementById('lightboxCounter');
-        if (img) img.src = lightboxImages[lightboxIndex];
-        if (counter) counter.textContent = (lightboxIndex + 1) + ' / ' + lightboxImages.length;
-    }
-
-    function updateLightboxNav() {
-        const prev = document.getElementById('lightboxPrev');
-        const next = document.getElementById('lightboxNext');
-        const show = lightboxImages.length > 1;
-        if (prev) prev.style.display = show ? 'flex' : 'none';
-        if (next) next.style.display = show ? 'flex' : 'none';
-    }
-
-    document.addEventListener('keydown', function(e) {
-        if (!lightboxInstance || !lightboxInstance._isShown) return;
-        if (e.key === 'ArrowLeft') navigateLightbox(-1);
-        if (e.key === 'ArrowRight') navigateLightbox(1);
-        if (e.key === 'Escape') lightboxInstance.hide();
-    });
-</script>
+    })();
+    </script>
 @endpush

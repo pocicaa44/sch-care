@@ -221,8 +221,6 @@
     </div>
 
     <canvas id="captureCanvas" style="display:none;"></canvas>
-
-
 @endsection
 
 @push('scripts')

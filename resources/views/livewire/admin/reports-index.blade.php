@@ -7,11 +7,9 @@
                         <i class="bi bi-archive"></i>
                         <span class="text-secondary text-uppercase">total</span>
                     </div>
-                    <div class="text-end">
-                        <span class="fs-1">
-                            {{ $stats['total'] }}
-                        </span>
-                    </div>
+                    <span class="fs-1">
+                        {{ $stats['total'] }}
+                    </span>
                 </div>
             </div>
         </div>
