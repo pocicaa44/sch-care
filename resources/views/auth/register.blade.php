@@ -28,47 +28,48 @@
                     <p>Daftar sekarang dan mulai laporkan masalah di sekolah dengan mudah.</p>
                 </div>
             </div>
-            <div class="col-12 col-md-9">
+            <div class="col-12 col-md-9 h-100">
                 <div class="w-100 h-100 d-flex flex-column align-items-center justify-content-center">
                     <div class="form-wrap">
-                
+
                         <div class="form-header">
                             <div class="eyebrow">Pendaftaran akun</div>
                             <h2>Daftar sebagai<br>siswa</h2>
                             <p>Sudah punya akun? <a href="{{ route('login') }}"
-                                    style="color:var(--red-vivid);font-weight:600;text-decoration:none;">Masuk di sini</a></p>
+                                    style="color:var(--red-vivid);font-weight:600;text-decoration:none;">Masuk di
+                                    sini</a></p>
                         </div>
-                
+
                         @if ($errors->any())
                             <div class="alert-auth error" ...>
                         @endif
-                
+
                         <form action="{{ route('register') }}" method="POST">
-                
+
                             @csrf
-                
+
                             <!-- Nama -->
                             <div class="field-group">
                                 <label class="field-label" for="name">Nama Lengkap</label>
                                 <div class="field-wrap">
                                     <i class="bi bi-person field-icon"></i>
                                     <input type="text" id="name" name="name" class="field-input"
-                                        placeholder="Nama sesuai identitas" autocomplete="name" value="{{ old('name') }}"
-                                        required />
+                                        placeholder="Nama sesuai identitas" autocomplete="name"
+                                        value="{{ old('name') }}" required />
                                 </div>
                             </div>
-                
+
                             <!-- Email -->
                             <div class="field-group">
                                 <label class="field-label" for="email">Alamat Email</label>
                                 <div class="field-wrap">
                                     <i class="bi bi-envelope field-icon"></i>
                                     <input type="email" id="email" name="email" class="field-input"
-                                        placeholder="nama@sekolah.sch.id" autocomplete="email" value="{{ old('email') }}"
-                                        required />
+                                        placeholder="nama@sekolah.sch.id" autocomplete="email"
+                                        value="{{ old('email') }}" required />
                                 </div>
                             </div>
-                
+
                             <!-- Password -->
                             <div class="field-group">
                                 <label class="field-label" for="password">Password</label>
@@ -90,15 +91,15 @@
                                 </div>
                                 <div class="strength-label" id="strengthLabel"></div>
                             </div>
-                
+
                             <!-- Konfirmasi Password -->
                             <div class="field-group">
                                 <label class="field-label" for="password_confirmation">Konfirmasi Password</label>
                                 <div class="field-wrap">
                                     <i class="bi bi-lock-fill field-icon"></i>
                                     <input type="password" id="password_confirmation" name="password_confirmation"
-                                        class="field-input has-eye" placeholder="Ulangi password" autocomplete="new-password"
-                                        oninput="checkConfirm()" required />
+                                        class="field-input has-eye" placeholder="Ulangi password"
+                                        autocomplete="new-password" oninput="checkConfirm()" required />
                                     <button type="button" class="btn-eye"
                                         onclick="togglePassword('password_confirmation', this)">
                                         <i class="bi bi-eye-slash"></i>
@@ -108,11 +109,11 @@
                                     <i class="bi bi-exclamation-circle-fill"></i> Password tidak cocok
                                 </div>
                             </div>
-                
+
                             <button type="submit" class="btn-auth" style="margin-top:8px;">
                                 <i class="bi bi-person-plus-fill"></i> Buat Akun
                             </button>
-                
+
                         </form>
                     </div>
                 </div>
